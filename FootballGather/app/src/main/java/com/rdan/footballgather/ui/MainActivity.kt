@@ -1,4 +1,4 @@
-package com.rdan.footballgather
+package com.rdan.footballgather.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

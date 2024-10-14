@@ -1,4 +1,4 @@
-package com.rdan.footballgather
+package com.rdan.footballgather.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
