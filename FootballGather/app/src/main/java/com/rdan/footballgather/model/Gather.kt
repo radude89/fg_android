@@ -15,7 +15,4 @@ data class Gather (
 
     @ColumnInfo(name = "score")
     val score: String,
-
-    val teamAPlayers: List<Player>,
-    val teamBPlayers: List<Player>
 )
