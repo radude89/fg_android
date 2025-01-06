@@ -9,7 +9,7 @@ val Shapes = Shapes(
     medium = RoundedCornerShape(
         topStart = 50.dp,
         bottomStart = 25.dp,
-        topEnd = 0.dp,
+        topEnd = 15.dp,
         bottomEnd = 15.dp
     ),
 )
