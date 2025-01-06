@@ -10,6 +10,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.rdan.footballgather.R
 import com.rdan.footballgather.ui.screens.list.PlayerListScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,8 +46,8 @@ private fun FootballGatherTopBar(
         scrollBehavior = scrollBehavior,
         title = {
             Text(
-                text = "Football Gather",
-                style = MaterialTheme.typography.titleLarge
+                text = stringResource(R.string.players),
+                style = MaterialTheme.typography.titleMedium
             )
         },
         modifier = modifier

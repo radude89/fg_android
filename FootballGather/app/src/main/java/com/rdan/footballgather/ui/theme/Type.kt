@@ -59,7 +59,7 @@ val Typography = Typography(
     ),
     titleMedium = TextStyle(
         fontFamily = PTSerifFontFamily,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Bold,
         fontSize = 24.sp
     ),
     titleSmall = TextStyle(
