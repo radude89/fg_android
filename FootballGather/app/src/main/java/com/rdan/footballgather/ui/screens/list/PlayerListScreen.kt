@@ -25,18 +25,19 @@ import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Player
+import com.rdan.footballgather.ui.AppViewModelProvider
 
 @Composable
 fun PlayerListScreen(
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
-) {
-    val viewModel: PlayerListViewModel = viewModel(
-        factory = PlayerListViewModel.factory
+    modifier: Modifier = Modifier,
+    viewModel: PlayerListViewModel = viewModel(
+        factory = AppViewModelProvider.Factory
     )
-    val players: List<Player> by viewModel.players.collectAsState()
+) {
+    val playerListUiState by viewModel.playerListUiState.collectAsState()
     ColumnView(
-        players = players,
+        players = playerListUiState.playerList,
         contentPadding = contentPadding,
         modifier = modifier
     )
