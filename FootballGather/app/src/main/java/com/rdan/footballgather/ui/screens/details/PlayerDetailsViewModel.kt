@@ -1,18 +1,39 @@
 package com.rdan.footballgather.ui.screens.details
 
 import androidx.lifecycle.ViewModel
-import com.rdan.footballgather.model.Player
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.lifecycle.viewModelScope
+import com.rdan.footballgather.data.FootballGatherRepository
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+
+data class PlayerDetailsUiState(
+    val playerDetails: PlayerDetails = PlayerDetails()
+)
+
+// TODO: Implement UI for PlayerDetailsScreen + Navigation
 
 class PlayerDetailsViewModel(
-    private val players: List<Player>
+    playerId: Long,
+    playerRepository: FootballGatherRepository
 ) : ViewModel() {
-    private val _selectedPlayer = MutableStateFlow<Player?>(players.firstOrNull())
-    val selectedPlayer: StateFlow<Player?> = _selectedPlayer.asStateFlow()
+    val uiState: StateFlow<PlayerDetailsUiState> =
+        playerRepository.getPlayer(playerId)
+            .filterNotNull()
+            .map {
+                PlayerDetailsUiState(
+                    playerDetails = it.toPlayerDetails()
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                initialValue = PlayerDetailsUiState()
+            )
 
-    fun setSelectedPlayer(player: Player) {
-        _selectedPlayer.value = player
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
     }
 }

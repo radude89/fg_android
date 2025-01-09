@@ -8,4 +8,7 @@ class LocalFootballGatherRepository(
 ): FootballGatherRepository {
     override fun getAllPlayers(): Flow<List<Player>> =
         footballGatherDao.getAllPlayers()
+
+    override fun getPlayer(id: Long): Flow<Player?> =
+        footballGatherDao.getPlayer(id)
 }
