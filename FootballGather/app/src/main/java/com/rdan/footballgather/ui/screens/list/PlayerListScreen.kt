@@ -1,6 +1,7 @@
 package com.rdan.footballgather.ui.screens.list
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,12 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -26,27 +31,50 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.ui.AppViewModelProvider
+import com.rdan.footballgather.ui.FootballGatherTopBar
+import com.rdan.footballgather.ui.navigation.NavigationDestination
 
+object PlayerListDestination : NavigationDestination {
+    override val route = "player_list"
+    override val titleRes = R.string.players
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerListScreen(
-    contentPadding: PaddingValues,
+    navigateToPlayerUpdate: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PlayerListViewModel = viewModel(
         factory = AppViewModelProvider.Factory
-    )
+    ),
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val playerListUiState by viewModel.playerListUiState.collectAsState()
-    ColumnView(
-        players = playerListUiState.playerList,
-        contentPadding = contentPadding,
-        modifier = modifier
-    )
+
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            FootballGatherTopBar(
+                title = stringResource(R.string.players),
+                scrollBehavior = scrollBehavior,
+                canNavigateBack = false
+            )
+        },
+    ) { contentPadding ->
+        ColumnView(
+            players = playerListUiState.playerList,
+            contentPadding = contentPadding,
+            onPlayerClick = { navigateToPlayerUpdate(it.id) },
+            modifier = modifier
+        )
+    }
 }
 
 @Composable
 private fun ColumnView(
     players: List<Player>,
     contentPadding: PaddingValues,
+    onPlayerClick: (Player) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn (
@@ -56,19 +84,33 @@ private fun ColumnView(
         )
     ) {
         items(players) { player ->
-            Card(
+            PlayerItem(
+                player,
+                onPlayerClick,
                 modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(R.dimen.padding_medium))
-            ) {
-                Column(
-                    Modifier
-                        .padding(dimensionResource(R.dimen.padding_medium))
-                ) {
-                    CardTitle(player)
-                    CardItem(player)
-                }
-            }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlayerItem(
+    player: Player,
+    onPlayerClick: (Player) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+            .clickable { onPlayerClick(player) }
+    ) {
+        Column(
+            Modifier
+                .padding(dimensionResource(R.dimen.padding_medium))
+        ) {
+            CardTitle(player)
+            CardItem(player)
         }
     }
 }

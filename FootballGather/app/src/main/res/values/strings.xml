@@ -3,4 +3,6 @@
     <string name="position_label">Position:</string>
     <string name="skill_label">Skill:</string>
     <string name="players">Players</string>
+    <string name="player_details">Player Details</string>
+    <string name="back_button">Back</string>
 </resources>

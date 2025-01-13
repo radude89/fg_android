@@ -1,5 +1,6 @@
 package com.rdan.footballgather.ui.screens.details
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rdan.footballgather.data.FootballGatherRepository
@@ -13,12 +14,14 @@ data class PlayerDetailsUiState(
     val playerDetails: PlayerDetails = PlayerDetails()
 )
 
-// TODO: Implement UI for PlayerDetailsScreen + Navigation
-
 class PlayerDetailsViewModel(
-    playerId: Long,
+    savedStateHandle: SavedStateHandle,
     playerRepository: FootballGatherRepository
 ) : ViewModel() {
+    private val playerId: Long = checkNotNull(
+        savedStateHandle[PlayerDetailsDestination.PLAYER_ID_ARG]
+    )
+
     val uiState: StateFlow<PlayerDetailsUiState> =
         playerRepository.getPlayer(playerId)
             .filterNotNull()
