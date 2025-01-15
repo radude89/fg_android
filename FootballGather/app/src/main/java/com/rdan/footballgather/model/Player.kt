@@ -16,8 +16,8 @@ data class Player (
     val name: String,
 
     @ColumnInfo(name = "player_position")
-    val position: PlayerPosition,
+    val position: PlayerPosition?,
 
     @ColumnInfo(name = "player_skill")
-    val skill: PlayerSkill
+    val skill: PlayerSkill?
 )

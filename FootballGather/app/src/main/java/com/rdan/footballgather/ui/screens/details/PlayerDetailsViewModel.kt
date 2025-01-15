@@ -9,6 +9,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 data class PlayerDetailsUiState(
     val playerDetails: PlayerDetails = PlayerDetails()
@@ -16,7 +21,7 @@ data class PlayerDetailsUiState(
 
 class PlayerDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    playerRepository: FootballGatherRepository
+    private val playerRepository: FootballGatherRepository
 ) : ViewModel() {
     private val playerId: Long = checkNotNull(
         savedStateHandle[PlayerDetailsDestination.PLAYER_ID_ARG]
@@ -35,6 +40,23 @@ class PlayerDetailsViewModel(
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = PlayerDetailsUiState()
             )
+
+    fun formattedPlayerCreationDate(createdAt: Long): String {
+        val localDateTime = LocalDateTime
+            .ofInstant(
+                Date(createdAt).toInstant(),
+                ZoneId.systemDefault()
+            )
+        return DateTimeFormatter
+            .ofPattern("MMM dd, yyyy", Locale.getDefault())
+            .format(localDateTime)
+    }
+
+    suspend fun deletePlayer() {
+        playerRepository.deletePlayer(
+            uiState.value.playerDetails.toPlayer()
+        )
+    }
 
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L

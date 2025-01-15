@@ -1,6 +1,7 @@
 package com.rdan.footballgather.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import com.rdan.footballgather.model.Player
@@ -14,6 +15,9 @@ interface FootballGatherDao {
 
     @Query("SELECT * FROM players WHERE id = :id")
     fun getPlayer(id: Long): Flow<Player>
+
+    @Delete
+    suspend fun delete(player: Player)
 
     @Transaction
     @Query("""

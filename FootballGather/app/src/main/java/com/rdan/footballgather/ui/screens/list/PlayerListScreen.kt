@@ -137,16 +137,19 @@ private fun CardItem(
 ) {
     Column(
         modifier = modifier
-            .padding(top = dimensionResource(R.dimen.padding_small))
+            .padding(top = dimensionResource(R.dimen.padding_small)),
+        verticalArrangement = Arrangement.spacedBy(
+            dimensionResource(R.dimen.padding_small)
+        )
     ) {
         CardRowItem(
             textItemID = R.string.position_label,
-            textItem = player.position.name,
+            textItem = player.position?.name ?: "-",
             modifier
         )
         CardRowItem(
             textItemID = R.string.skill_label,
-            textItem = player.skill.name,
+            textItem = player.skill?.name ?: "-",
             modifier
         )
     }
@@ -168,9 +171,7 @@ private fun CardRowItem(
     }
     Row(
         modifier = modifier
-            .padding(
-                horizontal = dimensionResource(R.dimen.padding_small),
-            )
+            .padding(horizontal = dimensionResource(R.dimen.padding_small))
     ) {
         Text(
             text = annotatedString,

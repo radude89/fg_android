@@ -38,6 +38,7 @@ fun AppNavHost(
             )
         ) {
             PlayerDetailsScreen(
+                navigateToEditPlayer = { TODO() },
                 navigateBack = { navController.navigateUp() }
             )
         }

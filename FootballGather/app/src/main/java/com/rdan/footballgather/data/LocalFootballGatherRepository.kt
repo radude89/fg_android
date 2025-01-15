@@ -11,4 +11,7 @@ class LocalFootballGatherRepository(
 
     override fun getPlayer(id: Long): Flow<Player?> =
         footballGatherDao.getPlayer(id)
+
+    override suspend fun deletePlayer(player: Player) =
+        footballGatherDao.delete(player)
 }
