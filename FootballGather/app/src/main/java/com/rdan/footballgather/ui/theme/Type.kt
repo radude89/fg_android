@@ -69,8 +69,8 @@ val Typography = Typography(
     ),
     bodyLarge = TextStyle(
         fontFamily = PTSerifFontFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 24.sp
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = PTSerifFontFamily,
