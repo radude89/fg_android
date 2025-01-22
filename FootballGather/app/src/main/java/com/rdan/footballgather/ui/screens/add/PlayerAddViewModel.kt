@@ -1,4 +1,4 @@
-package com.rdan.footballgather.ui.screens.addedit
+package com.rdan.footballgather.ui.screens.add
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +13,7 @@ data class PlayerEntryUiState(
     val isEntryValid: Boolean = false
 )
 
-class PlayerAddEntryViewModel(
+class PlayerAddViewModel(
     private val playerRepository: FootballGatherRepository
 ) : ViewModel() {
     var playerEntryUiState by mutableStateOf(PlayerEntryUiState())
@@ -32,7 +32,7 @@ class PlayerAddEntryViewModel(
         return playerDetails.name.isNotBlank()
     }
 
-    suspend fun savePlayerEntry() {
+    suspend fun savePlayer() {
         if (validateInput()) {
             playerRepository.insertPlayer(
                 playerEntryUiState.playerDetails.toPlayer()
