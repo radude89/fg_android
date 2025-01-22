@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.model.Team
 import kotlinx.coroutines.flow.Flow
@@ -34,4 +35,7 @@ interface FootballGatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(player: Player)
+
+    @Update
+    suspend fun update(player: Player)
 }

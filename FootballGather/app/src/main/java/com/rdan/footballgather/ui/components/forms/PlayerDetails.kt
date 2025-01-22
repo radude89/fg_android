@@ -1,4 +1,4 @@
-package com.rdan.footballgather.ui.screens.details
+package com.rdan.footballgather.ui.components.forms
 
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.model.PlayerPosition
@@ -25,4 +25,11 @@ fun PlayerDetails.toPlayer(): Player = Player(
     name = name,
     position = position?.let { PlayerPosition.valueOf(it) },
     skill = skill?.let { PlayerSkill.valueOf(it) },
+)
+
+fun Player.toPlayerEntryUiState(
+    isEntryValid: Boolean = false
+): PlayerEntryUiState = PlayerEntryUiState(
+    playerDetails = this.toPlayerDetails(),
+    isEntryValid = isEntryValid
 )

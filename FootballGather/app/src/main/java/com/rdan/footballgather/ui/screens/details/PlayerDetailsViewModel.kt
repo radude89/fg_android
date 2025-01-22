@@ -4,6 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rdan.footballgather.data.FootballGatherRepository
+import com.rdan.footballgather.ui.components.forms.PlayerDetails
+import com.rdan.footballgather.ui.components.forms.toPlayer
+import com.rdan.footballgather.ui.components.forms.toPlayerDetails
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull

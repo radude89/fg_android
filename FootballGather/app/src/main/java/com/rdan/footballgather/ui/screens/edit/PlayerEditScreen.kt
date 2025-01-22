@@ -1,4 +1,4 @@
-package com.rdan.footballgather.ui.screens.add
+package com.rdan.footballgather.ui.screens.edit
 
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -19,18 +19,21 @@ import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
 import com.rdan.footballgather.ui.components.forms.PlayerEntryForm
 import com.rdan.footballgather.ui.navigation.NavigationDestination
+import com.rdan.footballgather.ui.screens.add.PlayerAddDestination
 import kotlinx.coroutines.launch
 
-object PlayerAddDestination : NavigationDestination {
-    override val route = "player_entry"
-    override val titleRes = R.string.players_title
+object PlayerEditDestination : NavigationDestination {
+    override val route = "player_edit"
+    override val titleRes = R.string.edit_player_title
+    const val PLAYER_ID_ARG = "playerId"
+    val routeWithArgs = "$route/{$PLAYER_ID_ARG}"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerAddScreen(
+fun PlayerEditScreen(
     navigateBack: () -> Unit,
-    viewModel: PlayerAddViewModel = viewModel(
+    viewModel: PlayerEditViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
     modifier: Modifier = Modifier
@@ -49,7 +52,7 @@ fun PlayerAddScreen(
             onPlayerEntryValueChange = viewModel::updateUiState,
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.savePlayer()
+                    viewModel.updatePlayer()
                     navigateBack()
                 }
             },

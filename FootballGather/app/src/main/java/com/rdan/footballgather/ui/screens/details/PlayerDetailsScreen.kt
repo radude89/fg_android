@@ -41,6 +41,7 @@ import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
 import com.rdan.footballgather.ui.components.PrimaryButton
+import com.rdan.footballgather.ui.components.forms.toPlayer
 import com.rdan.footballgather.ui.navigation.NavigationDestination
 import kotlinx.coroutines.launch
 
@@ -68,8 +69,7 @@ fun PlayerDetailsScreen(
         topBar = {
             FootballGatherTopBar(
                 title = stringResource(R.string.player_details),
-                canNavigateBack = true,
-                navigateUp = navigateBack
+                navigateBack = navigateBack
             )
         },
         floatingActionButton = {

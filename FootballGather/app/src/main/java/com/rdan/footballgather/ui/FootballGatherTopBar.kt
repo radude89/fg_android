@@ -19,8 +19,8 @@ import com.rdan.footballgather.R
 fun FootballGatherTopBar(
     title: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit = {},
+    canNavigateBack: Boolean = true,
+    navigateBack: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     CenterAlignedTopAppBar(
@@ -33,7 +33,7 @@ fun FootballGatherTopBar(
         },
         navigationIcon = {
             if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
+                IconButton(onClick = navigateBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back_button)

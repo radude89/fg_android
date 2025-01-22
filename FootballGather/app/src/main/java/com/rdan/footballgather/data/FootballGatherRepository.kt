@@ -8,4 +8,5 @@ interface FootballGatherRepository {
     fun getPlayer(id: Long): Flow<Player?>
     suspend fun deletePlayer(player: Player)
     suspend fun insertPlayer(player: Player)
+    suspend fun updatePlayer(player: Player)
 }
