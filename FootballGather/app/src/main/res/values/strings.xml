@@ -18,4 +18,5 @@
     <string name="player_name_required">Name*</string>
     <string name="player_position">Position</string>
     <string name="player_skill">Skill</string>
+    <string name="players_title">Add Player</string>
 </resources>

@@ -61,7 +61,9 @@ fun PlayerDetailsScreen(
     navigateBack: () -> Unit,
     navigateToEditPlayer: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: PlayerDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: PlayerDetailsViewModel = viewModel(
+        factory = AppViewModelProvider.Factory
+    )
 ) {
     val uiState = viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()

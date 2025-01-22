@@ -2,6 +2,8 @@ package com.rdan.footballgather.data
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.rdan.footballgather.model.Player
@@ -29,4 +31,7 @@ interface FootballGatherDao {
         gatherId: Long,
         team: Team
     ): Flow<List<Player>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(player: Player)
 }

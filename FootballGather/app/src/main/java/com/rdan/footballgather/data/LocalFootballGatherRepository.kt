@@ -14,4 +14,7 @@ class LocalFootballGatherRepository(
 
     override suspend fun deletePlayer(player: Player) =
         footballGatherDao.delete(player)
+
+    override suspend fun insertPlayer(player: Player) =
+        footballGatherDao.insert(player)
 }

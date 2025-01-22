@@ -11,11 +11,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
+import com.rdan.footballgather.ui.AppViewModelProvider
+import com.rdan.footballgather.ui.navigation.NavigationDestination
 import com.rdan.footballgather.ui.screens.details.PlayerDetails
 
+object PlayerAddEntryDestination : NavigationDestination {
+    override val route = "player_entry"
+    override val titleRes = R.string.players_title
+}
+
 @Composable
-fun PlayerEntryScreen(
+fun PlayerAddEntryScreen(
+    navigateBack: () -> Unit,
+    canNavigateBack: Boolean = true,
+    viewModel: PlayerAddEntryViewModel = viewModel(
+        factory = AppViewModelProvider.Factory
+    ),
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -57,14 +70,10 @@ private fun PlayerEntryField(
     OutlinedTextField(
         value = playerDetails.name,
         onValueChange = {
-            onValueChange(
-                playerDetails.copy(name = it)
-            )
+            onValueChange(playerDetails.copy(name = it))
         },
         label = {
-            Text(
-                stringResource(R.string.player_name_required)
-            )
+            Text(stringResource(R.string.player_name_required))
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = fieldColor,

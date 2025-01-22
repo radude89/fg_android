@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.rdan.footballgather.FootballGatherApplication
+import com.rdan.footballgather.ui.screens.addedit.PlayerAddEntryViewModel
 import com.rdan.footballgather.ui.screens.details.PlayerDetailsViewModel
 import com.rdan.footballgather.ui.screens.list.PlayerListViewModel
 
@@ -19,6 +20,11 @@ object AppViewModelProvider {
         initializer {
             PlayerDetailsViewModel(
                 savedStateHandle = this.createSavedStateHandle(),
+                playerRepository = footballGatherApplication().container.appRepository
+            )
+        }
+        initializer {
+            PlayerAddEntryViewModel(
                 playerRepository = footballGatherApplication().container.appRepository
             )
         }
