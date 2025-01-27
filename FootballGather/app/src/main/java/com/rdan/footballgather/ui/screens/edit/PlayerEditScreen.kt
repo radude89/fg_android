@@ -19,7 +19,6 @@ import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
 import com.rdan.footballgather.ui.components.forms.PlayerEntryForm
 import com.rdan.footballgather.ui.navigation.NavigationDestination
-import com.rdan.footballgather.ui.screens.add.PlayerAddDestination
 import kotlinx.coroutines.launch
 
 object PlayerEditDestination : NavigationDestination {
@@ -42,7 +41,7 @@ fun PlayerEditScreen(
     Scaffold(
         topBar = {
             FootballGatherTopBar(
-                title = stringResource(PlayerAddDestination.titleRes),
+                title = stringResource(PlayerEditDestination.titleRes),
                 navigateBack = navigateBack
             )
         }
