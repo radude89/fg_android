@@ -52,8 +52,16 @@ private fun PlayerEntryInputForm(
     onValueChange: (PlayerDetails) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var selectedSkill by remember { mutableStateOf(PlayerSkill.Unknown) }
-    var selectedPosition by remember { mutableStateOf(PlayerPosition.Unknown) }
+    var selectedSkill by remember(playerDetails) {
+        val skill = playerDetails.skill?.let { PlayerSkill.valueOf(it) }
+            ?: PlayerSkill.Unknown
+        mutableStateOf(skill)
+    }
+    var selectedPosition by remember(playerDetails) {
+        val position = playerDetails.position?.let { PlayerPosition.valueOf(it) }
+            ?: PlayerPosition.Unknown
+        mutableStateOf(position)
+    }
     Column(
         verticalArrangement = Arrangement
             .spacedBy(
@@ -65,13 +73,19 @@ private fun PlayerEntryInputForm(
             playerDetails,
             onValueChange
         )
-        PlayerSkillPicker(
-            selectedSkill = selectedSkill,
-            onSkillSelected = { newSkill -> selectedSkill = newSkill }
-        )
         PlayerPositionPicker(
             selectedPosition = selectedPosition,
-            onPositionSelected = { newPosition -> selectedPosition = newPosition }
+            onPositionSelected = { newPosition ->
+                selectedPosition = newPosition
+                onValueChange(playerDetails.copy(position = newPosition.name))
+            }
+        )
+        PlayerSkillPicker(
+            selectedSkill = selectedSkill,
+            onSkillSelected = { newSkill ->
+                selectedSkill = newSkill
+                onValueChange(playerDetails.copy(skill = newSkill.name))
+            }
         )
     }
 }
