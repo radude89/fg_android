@@ -1,4 +1,4 @@
-package com.rdan.footballgather.ui.components
+package com.rdan.footballgather.ui.components.buttons
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth

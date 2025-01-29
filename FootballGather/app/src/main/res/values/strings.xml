@@ -22,4 +22,5 @@
     <string name="players_title">Add Player</string>
     <string name="save_action">Save</string>
     <string name="choose_skill">Choose skill</string>
+    <string name="choose_position">Choose position</string>
 </resources>

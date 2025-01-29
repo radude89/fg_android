@@ -40,7 +40,7 @@ import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
-import com.rdan.footballgather.ui.components.PrimaryButton
+import com.rdan.footballgather.ui.components.buttons.PrimaryButton
 import com.rdan.footballgather.ui.components.forms.toPlayer
 import com.rdan.footballgather.ui.navigation.NavigationDestination
 import kotlinx.coroutines.launch
