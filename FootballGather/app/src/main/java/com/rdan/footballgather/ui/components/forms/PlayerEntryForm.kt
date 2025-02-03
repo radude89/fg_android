@@ -14,7 +14,6 @@ import androidx.compose.ui.res.dimensionResource
 import com.rdan.footballgather.R
 import com.rdan.footballgather.model.PlayerPosition
 import com.rdan.footballgather.model.PlayerSkill
-import com.rdan.footballgather.ui.components.buttons.PrimaryButton
 import com.rdan.footballgather.ui.components.pickers.DefaultPicker
 import com.rdan.footballgather.ui.components.textfields.DefaultOutlinedTextField
 
@@ -22,7 +21,6 @@ import com.rdan.footballgather.ui.components.textfields.DefaultOutlinedTextField
 fun PlayerEntryForm(
     uiState: PlayerEntryUiState,
     onPlayerEntryValueChange: (PlayerDetails) -> Unit,
-    onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -37,11 +35,6 @@ fun PlayerEntryForm(
             playerDetails = uiState.playerDetails,
             onValueChange = onPlayerEntryValueChange,
             modifier = Modifier.fillMaxWidth()
-        )
-        PrimaryButton(
-            titleStringResID = R.string.save_action,
-            enabled = uiState.isEntryValid,
-            onClick = onSaveClick
         )
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -24,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,11 +40,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Player
+import com.rdan.footballgather.model.PlayerPosition
+import com.rdan.footballgather.model.PlayerSkill
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
-import com.rdan.footballgather.ui.components.buttons.PrimaryButton
 import com.rdan.footballgather.ui.components.forms.toPlayer
 import com.rdan.footballgather.ui.navigation.NavigationDestination
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 object PlayerDetailsDestination : NavigationDestination {
@@ -73,30 +77,19 @@ fun PlayerDetailsScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navigateToEditPlayer(uiState.value.playerDetails.id) },
-                shape = MaterialTheme.shapes.large,
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.padding_large))
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(R.string.edit_player_title),
-                )
-            }
+            FloatingActionButtonsView(
+                uiState = uiState,
+                coroutineScope = coroutineScope,
+                viewModel = viewModel,
+                navigateBack = navigateBack,
+                navigateToEditPlayer = navigateToEditPlayer
+            )
         },
         modifier = modifier
     ) { innerPadding ->
         PlayerDetailsContent(
             playerDetailsUiState = uiState.value,
             viewModel = viewModel,
-            onDelete = {
-                coroutineScope.launch {
-                    viewModel.deletePlayer()
-                    navigateBack()
-                }
-            },
             modifier = Modifier
                 .padding(
                     start = innerPadding
@@ -112,10 +105,83 @@ fun PlayerDetailsScreen(
 }
 
 @Composable
+private fun FloatingActionButtonsView(
+    uiState: State<PlayerDetailsUiState>,
+    coroutineScope: CoroutineScope,
+    viewModel: PlayerDetailsViewModel,
+    navigateBack: () -> Unit,
+    navigateToEditPlayer: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
+    Column {
+        DeleteFloatingButton(
+            onClick = { deleteConfirmationRequired = true }
+        )
+        EditFloatingButton(
+            onClick = {
+                navigateToEditPlayer(uiState.value.playerDetails.id)
+            }
+        )
+        if (deleteConfirmationRequired) {
+            DeleteConfirmationDialog(
+                onDeleteConfirm = {
+                    deleteConfirmationRequired = false
+                    coroutineScope.launch {
+                        viewModel.deletePlayer()
+                        navigateBack()
+                    }
+                },
+                onDeleteCancel = { deleteConfirmationRequired = false },
+                modifier = modifier
+                    .padding(dimensionResource(R.dimen.padding_medium))
+            )
+        }
+    }
+}
+
+@Composable
+private fun EditFloatingButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FloatingActionButton(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.large,
+        modifier = modifier
+            .padding(dimensionResource(R.dimen.padding_large))
+
+    ) {
+        Icon(
+            imageVector = Icons.Default.Edit,
+            contentDescription = stringResource(R.string.edit_player_title),
+        )
+    }
+}
+
+@Composable
+private fun DeleteFloatingButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    FloatingActionButton(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.large,
+        modifier = modifier
+            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = stringResource(R.string.delete_player_title),
+        )
+    }
+}
+
+@Composable
 private fun PlayerDetailsContent(
     playerDetailsUiState: PlayerDetailsUiState,
     viewModel: PlayerDetailsViewModel,
-    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -125,27 +191,11 @@ private fun PlayerDetailsContent(
             dimensionResource(R.dimen.padding_medium)
         )
     ) {
-        var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
         PlayerDetails(
             player = playerDetailsUiState.playerDetails.toPlayer(),
             viewModel = viewModel,
             modifier = Modifier.fillMaxWidth()
         )
-        PrimaryButton(
-            titleStringResID = R.string.delete_action,
-            onClick = { deleteConfirmationRequired = true }
-        )
-        if (deleteConfirmationRequired) {
-            DeleteConfirmationDialog(
-                onDeleteConfirm = {
-                    deleteConfirmationRequired = false
-                    onDelete()
-                },
-                onDeleteCancel = { deleteConfirmationRequired = false },
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.padding_medium))
-            )
-        }
     }
 }
 
@@ -174,11 +224,17 @@ private fun PlayerDetails(
             )
             PlayerDetailsRow(
                 labelResourceId = R.string.player_details_card_position,
-                playerDetailsValue = player.position?.name ?: "-"
+                playerDetailsValue = when (player.position?.name) {
+                    PlayerPosition.Unknown.name, null -> "-"
+                    else -> player.position.name
+                }
             )
             PlayerDetailsRow(
                 labelResourceId = R.string.player_details_card_skill,
-                playerDetailsValue = player.skill?.name ?: "-"
+                playerDetailsValue = when (player.skill?.name) {
+                    PlayerSkill.Unknown.name, null -> "-"
+                    else -> player.skill.name
+                }
             )
             PlayerDetailsRow(
                 labelResourceId = R.string.player_details_card_created_at,
