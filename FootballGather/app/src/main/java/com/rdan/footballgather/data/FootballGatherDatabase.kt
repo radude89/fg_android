@@ -12,7 +12,7 @@ import com.rdan.footballgather.model.Player
 
 @Database(
     entities = [Player::class, Gather::class, GatherPlayerCrossRef::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)

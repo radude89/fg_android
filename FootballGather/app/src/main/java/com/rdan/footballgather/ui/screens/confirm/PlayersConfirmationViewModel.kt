@@ -1,4 +1,4 @@
-package com.rdan.footballgather.ui.screens.list
+package com.rdan.footballgather.ui.screens.confirm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,18 +9,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-data class PlayerUiState(val playerList: List<Player> = listOf())
+data class PlayersConfirmationUiState(val playerList: List<Player> = listOf())
 
-class PlayerListViewModel(
-    playerRepository: FootballGatherRepository
+class PlayersConfirmationViewModel(
+    private val playerRepository: FootballGatherRepository
 ) : ViewModel() {
-    val playerListUiState: StateFlow<PlayerUiState> =
+    val playersConfirmationListUiState: StateFlow<PlayersConfirmationUiState> =
         playerRepository.getAllPlayers()
-            .map { PlayerUiState(it) }
+            .map { PlayersConfirmationUiState(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = PlayerUiState()
+                initialValue = PlayersConfirmationUiState()
             )
 
     companion object {

@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.rdan.footballgather.ui.screens.add.PlayerAddDestination
 import com.rdan.footballgather.ui.screens.add.PlayerAddScreen
+import com.rdan.footballgather.ui.screens.confirm.PlayersConfirmationDestination
+import com.rdan.footballgather.ui.screens.confirm.PlayersConfirmationScreen
 import com.rdan.footballgather.ui.screens.details.PlayerDetailsDestination
 import com.rdan.footballgather.ui.screens.details.PlayerDetailsScreen
 import com.rdan.footballgather.ui.screens.edit.PlayerEditDestination
@@ -35,6 +37,10 @@ fun AppNavHost(
                 navigateToAddPlayer = {
                     navController
                         .navigate(PlayerAddDestination.route)
+                },
+                navigateToConfirmPlayers = {
+                    navController
+                        .navigate(PlayersConfirmationDestination.route)
                 }
             )
         }
@@ -68,6 +74,11 @@ fun AppNavHost(
             )
         ) {
             PlayerEditScreen(
+                navigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(route = PlayersConfirmationDestination.route) {
+            PlayersConfirmationScreen(
                 navigateBack = { navController.popBackStack() }
             )
         }

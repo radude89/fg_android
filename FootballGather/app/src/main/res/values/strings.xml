@@ -23,4 +23,7 @@
     <string name="save_action">Save</string>
     <string name="choose_skill">Choose skill</string>
     <string name="choose_position">Choose position</string>
+    <string name="no_players_available">There aren\'t any players. Please add one.</string>
+    <string name="confirm_players">Confirm Players</string>
+    <string name="confirm_players_title">Confirm Players</string>
 </resources>
