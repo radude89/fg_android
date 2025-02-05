@@ -28,4 +28,5 @@
     <string name="confirm_players_title">Confirm Players</string>
     <string name="delete_player_title">Delete Player</string>
     <string name="confirm_players_action">Confirm Players</string>
+    <string name="select_team">Select Team</string>
 </resources>

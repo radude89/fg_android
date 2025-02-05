@@ -13,9 +13,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,10 +25,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
@@ -37,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
@@ -60,7 +60,7 @@ fun PlayersConfirmationScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val playerListUiState by viewModel.playersConfirmationListUiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -77,7 +77,8 @@ fun PlayersConfirmationScreen(
         }
     ) { contentPadding ->
         ColumnView(
-            players = playerListUiState.playerList,
+            uiState = uiState,
+            viewModel = viewModel,
             contentPadding = contentPadding,
             modifier = modifier
         )
@@ -105,7 +106,8 @@ private fun ConfirmFloatingButton(
 
 @Composable
 private fun ColumnView(
-    players: List<Player>,
+    uiState: PlayersConfirmationUiState,
+    viewModel: PlayersConfirmationViewModel,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -115,10 +117,11 @@ private fun ColumnView(
             dimensionResource(R.dimen.padding_mediumLarge)
         )
     ) {
-        items(players) { player ->
+        items(uiState.playerList) { player ->
             PlayerItem(
-                player,
-                modifier
+                player = player,
+                viewModel = viewModel,
+                modifier = modifier
             )
         }
     }
@@ -127,6 +130,7 @@ private fun ColumnView(
 @Composable
 private fun PlayerItem(
     player: Player,
+    viewModel: PlayersConfirmationViewModel,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -138,7 +142,10 @@ private fun PlayerItem(
             Modifier
                 .padding(dimensionResource(R.dimen.padding_medium))
         ) {
-            CardTitle(player)
+            CardTitle(
+                player = player,
+                viewModel = viewModel
+            )
             CardItem(player)
         }
     }
@@ -147,38 +154,61 @@ private fun PlayerItem(
 @Composable
 private fun CardTitle(
     player: Player,
+    viewModel: PlayersConfirmationViewModel,
     modifier: Modifier = Modifier
 ) {
-    val playerTeams = remember { mutableStateMapOf<Player, String>() }
-    var expanded by remember { mutableStateOf(false) }
     Row(
-        modifier = modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_small))
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            player.name,
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = modifier
-                .padding(
-                    horizontal = dimensionResource(R.dimen.padding_small),
-                )
+        PlayerNameView(
+            playerName = player.name,
+            modifier = modifier.weight(1f)
         )
-        Box {
-            Button(onClick = { expanded = true }) {
-                Text(text = playerTeams[player] ?: "Select Team")
-            }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                listOf("Team A", "Team B", "Bench").forEach { team ->
-                    DropdownMenuItem(
-                        text = { Text(team) },
-                        onClick = {
-                            playerTeams[player] = team
-                            expanded = false
-                        }
-                    )
-                }
-            }
+        SelectTeamDropdown(
+            player = player,
+            viewModel = viewModel
+        )
+    }
+}
+
+@Composable
+private fun PlayerNameView(
+    playerName: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = playerName,
+        style = MaterialTheme.typography.headlineMedium,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier
+            .padding(
+                horizontal = dimensionResource(R.dimen.padding_small),
+            )
+    )
+}
+
+@Composable
+private fun SelectTeamDropdown(
+    player: Player,
+    viewModel: PlayersConfirmationViewModel
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        Button(
+            onClick = { expanded = true },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.secondaryContainer
+            ),
+        ) {
+            Text(
+                text = viewModel.getTeamName(player)
+                    ?: stringResource(R.string.select_team)
+            )
         }
+
     }
 }
 
