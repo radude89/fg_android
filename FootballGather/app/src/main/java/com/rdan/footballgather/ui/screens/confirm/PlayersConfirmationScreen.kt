@@ -45,6 +45,7 @@ import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
+import com.rdan.footballgather.ui.components.alertdialogs.DefaultAlertDialog
 import com.rdan.footballgather.ui.navigation.NavigationDestination
 
 object PlayersConfirmationDestination : NavigationDestination {
@@ -52,13 +53,36 @@ object PlayersConfirmationDestination : NavigationDestination {
     override val titleRes = R.string.confirm_players
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayersConfirmationScreen(
     navigateBack: () -> Unit,
     viewModel: PlayersConfirmationViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
+    modifier: Modifier = Modifier
+) {
+    val openDialog = remember { mutableStateOf(false) }
+    MainContent(
+        viewModel = viewModel,
+        onShowSelectTeamsDialog = { openDialog.value = true },
+        navigateBack = navigateBack,
+        modifier = modifier
+    )
+    if (openDialog.value) {
+        DefaultAlertDialog(
+            contentMessageID = R.string.players_both_teams_alert,
+            onDismissRequest = { openDialog.value = false },
+            modifier = modifier
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MainContent(
+    viewModel: PlayersConfirmationViewModel,
+    onShowSelectTeamsDialog: () -> Unit,
+    navigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -73,7 +97,13 @@ fun PlayersConfirmationScreen(
         },
         floatingActionButton = {
             ConfirmFloatingButton(
-                onClick = {},
+                onClick = {
+                    if (!viewModel.hasPlayersInBothTeams) {
+                        onShowSelectTeamsDialog()
+                    } else {
+                        // TODO: Navigate to Gather screen
+                    }
+                },
                 modifier = modifier
             )
         }

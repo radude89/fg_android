@@ -58,4 +58,12 @@ class PlayersConfirmationViewModel(
     fun getTeamNames(): List<String> {
         return _uiState.value.teamNames
     }
+    
+    val hasPlayersInBothTeams: Boolean
+        get () {
+            val playerTeams = _uiState.value.playerTeams
+            val hasPlayersInTeamA = playerTeams.any { it.value == Team.TeamA }
+            val hasPlayersInTeamB = playerTeams.any { it.value == Team.TeamB }
+            return hasPlayersInTeamA && hasPlayersInTeamB
+        }
 }

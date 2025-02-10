@@ -15,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -23,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -44,6 +42,7 @@ import com.rdan.footballgather.model.PlayerPosition
 import com.rdan.footballgather.model.PlayerSkill
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
+import com.rdan.footballgather.ui.components.alertdialogs.DefaultAlertDialog
 import com.rdan.footballgather.ui.components.forms.toPlayer
 import com.rdan.footballgather.ui.navigation.NavigationDestination
 import kotlinx.coroutines.CoroutineScope
@@ -124,17 +123,19 @@ private fun FloatingActionButtonsView(
             }
         )
         if (deleteConfirmationRequired) {
-            DeleteConfirmationDialog(
-                onDeleteConfirm = {
+            DefaultAlertDialog(
+                contentMessageID = R.string.delete_question,
+                dismissButtonTitleID = R.string.no,
+                confirmButtonTitleID = R.string.yes,
+                onDismissRequest = { deleteConfirmationRequired = false },
+                onConfirmRequest = {
                     deleteConfirmationRequired = false
                     coroutineScope.launch {
                         viewModel.deletePlayer()
                         navigateBack()
                     }
                 },
-                onDeleteCancel = { deleteConfirmationRequired = false },
                 modifier = modifier
-                    .padding(dimensionResource(R.dimen.padding_medium))
             )
         }
     }
@@ -266,31 +267,4 @@ private fun PlayerDetailsRow(
             fontWeight = FontWeight.Bold
         )
     }
-}
-
-@Composable
-private fun DeleteConfirmationDialog(
-    onDeleteConfirm: () -> Unit,
-    onDeleteCancel: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    AlertDialog(
-        onDismissRequest = { },
-        title = {
-            Text(stringResource(R.string.attention))
-        },
-        text = {
-            Text(stringResource(R.string.delete_question))
-       },
-        modifier = modifier,
-        dismissButton = {
-            TextButton(onClick = onDeleteCancel) {
-                Text(stringResource(R.string.no))
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDeleteConfirm) {
-                Text(stringResource(R.string.yes))
-            }
-        })
 }
