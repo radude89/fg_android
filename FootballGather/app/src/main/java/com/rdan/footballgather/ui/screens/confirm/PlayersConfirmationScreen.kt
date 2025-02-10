@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -196,19 +198,60 @@ private fun SelectTeamDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Box {
-        Button(
-            onClick = { expanded = true },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.secondaryContainer
-            ),
-        ) {
-            Text(
-                text = viewModel.getTeamName(player)
-                    ?: stringResource(R.string.select_team)
+        SelectTeamDropdownButtonTitle(
+            teamName = viewModel.getTeamName(player),
+            onClick = { expanded = true }
+        )
+        SelectTeamDropdownMenu(
+            teamNames = viewModel.getTeamNames(),
+            expanded = expanded,
+            onClick = { teamName ->
+                viewModel.updatePlayerTeam(
+                    player = player,
+                    teamName = teamName
+                )
+                expanded = false
+            },
+            onDismissRequest = { expanded = false }
+        )
+    }
+}
+
+@Composable
+private fun SelectTeamDropdownButtonTitle(
+    teamName: String?,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+    ) {
+        Text(
+            text = teamName ?: stringResource(R.string.select_team)
+        )
+    }
+}
+
+@Composable
+private fun SelectTeamDropdownMenu(
+    teamNames: List<String>,
+    expanded: Boolean,
+    onClick: (String) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest
+    ) {
+        teamNames.forEach { teamName ->
+            DropdownMenuItem(
+                text = { Text(teamName) },
+                onClick = { onClick(teamName) }
             )
         }
-
     }
 }
 
