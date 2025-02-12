@@ -15,6 +15,8 @@ import com.rdan.footballgather.ui.screens.details.PlayerDetailsDestination
 import com.rdan.footballgather.ui.screens.details.PlayerDetailsScreen
 import com.rdan.footballgather.ui.screens.edit.PlayerEditDestination
 import com.rdan.footballgather.ui.screens.edit.PlayerEditScreen
+import com.rdan.footballgather.ui.screens.gather.GatherDestination
+import com.rdan.footballgather.ui.screens.gather.GatherScreen
 import com.rdan.footballgather.ui.screens.list.PlayerListDestination
 import com.rdan.footballgather.ui.screens.list.PlayerListScreen
 
@@ -79,6 +81,22 @@ fun AppNavHost(
         }
         composable(route = PlayersConfirmationDestination.route) {
             PlayersConfirmationScreen(
+                navigateBack = { navController.popBackStack() },
+                navigateToGatherScreen = {
+                    navController
+                        .navigate("${GatherDestination.route}/${it}")
+                }
+            )
+        }
+        composable(
+            route = GatherDestination.routeWithArgs,
+            arguments = listOf(
+                navArgument(GatherDestination.PLAYER_TEAMS_ARG) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            GatherScreen(
                 navigateBack = { navController.popBackStack() }
             )
         }

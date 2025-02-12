@@ -56,6 +56,7 @@ object PlayersConfirmationDestination : NavigationDestination {
 @Composable
 fun PlayersConfirmationScreen(
     navigateBack: () -> Unit,
+    navigateToGatherScreen: (String) -> Unit,
     viewModel: PlayersConfirmationViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
@@ -66,6 +67,7 @@ fun PlayersConfirmationScreen(
         viewModel = viewModel,
         onShowSelectTeamsDialog = { openDialog.value = true },
         navigateBack = navigateBack,
+        navigateToGatherScreen = navigateToGatherScreen,
         modifier = modifier
     )
     if (openDialog.value) {
@@ -83,6 +85,7 @@ private fun MainContent(
     viewModel: PlayersConfirmationViewModel,
     onShowSelectTeamsDialog: () -> Unit,
     navigateBack: () -> Unit,
+    navigateToGatherScreen: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -102,6 +105,7 @@ private fun MainContent(
                         onShowSelectTeamsDialog()
                     } else {
                         // TODO: Navigate to Gather screen
+                        navigateToGatherScreen("Gather")
                     }
                 },
                 modifier = modifier
