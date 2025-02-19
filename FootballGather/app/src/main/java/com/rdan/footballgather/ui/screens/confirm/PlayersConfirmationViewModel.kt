@@ -2,9 +2,11 @@ package com.rdan.footballgather.ui.screens.confirm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.rdan.footballgather.data.FootballGatherRepository
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.model.Team
+import com.rdan.footballgather.model.Team.Companion.toDisplayName
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +28,14 @@ class PlayersConfirmationViewModel(
 
     val uiState: StateFlow<PlayersConfirmationUiState> =
         _uiState.asStateFlow()
+
+    val hasPlayersInBothTeams: Boolean
+        get () {
+            val playerTeams = _uiState.value.playerTeams
+            val hasPlayersInTeamA = playerTeams.any { it.value == Team.TeamA }
+            val hasPlayersInTeamB = playerTeams.any { it.value == Team.TeamB }
+            return hasPlayersInTeamA && hasPlayersInTeamB
+        }
 
     init {
         viewModelScope.launch {
@@ -58,12 +68,14 @@ class PlayersConfirmationViewModel(
     fun getTeamNames(): List<String> {
         return _uiState.value.teamNames
     }
-    
-    val hasPlayersInBothTeams: Boolean
-        get () {
-            val playerTeams = _uiState.value.playerTeams
-            val hasPlayersInTeamA = playerTeams.any { it.value == Team.TeamA }
-            val hasPlayersInTeamB = playerTeams.any { it.value == Team.TeamB }
-            return hasPlayersInTeamA && hasPlayersInTeamB
-        }
+
+    fun getPlayerTeamsJson(): String {
+        val playerTeams = _uiState.value.playerTeams
+        val grouped = playerTeams.entries
+            .filter { it.value != Team.Bench }
+            .groupBy({ it.value }, { it.key.id })
+            .mapKeys { toDisplayName(it.key) }
+            .mapValues { it.value.joinToString(", ") }
+        return Gson().toJson(grouped)
+    }
 }

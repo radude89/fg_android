@@ -71,7 +71,7 @@ fun AppNavHost(
             route = PlayerEditDestination.routeWithArgs,
             arguments = listOf(
                 navArgument(PlayerEditDestination.PLAYER_ID_ARG) {
-                    type = NavType.IntType
+                    type = NavType.LongType
                 }
             )
         ) {
@@ -81,11 +81,10 @@ fun AppNavHost(
         }
         composable(route = PlayersConfirmationDestination.route) {
             PlayersConfirmationScreen(
-                navigateBack = { navController.popBackStack() },
-                navigateToGatherScreen = {
-                    navController
-                        .navigate("${GatherDestination.route}/${it}")
-                }
+                navigateToGatherScreen = { playerTeams ->
+                    navController.navigate("${GatherDestination.route}/$playerTeams")
+                },
+                navigateBack = { navController.popBackStack() }
             )
         }
         composable(

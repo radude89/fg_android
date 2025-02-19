@@ -91,7 +91,8 @@ private fun MainContent(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             FootballGatherTopBar(
                 title = stringResource(R.string.confirm_players),
@@ -104,8 +105,9 @@ private fun MainContent(
                     if (!viewModel.hasPlayersInBothTeams) {
                         onShowSelectTeamsDialog()
                     } else {
-                        // TODO: Navigate to Gather screen
-                        navigateToGatherScreen("Gather")
+                        navigateToGatherScreen(
+                            viewModel.getPlayerTeamsJson()
+                        )
                     }
                 },
                 modifier = modifier
