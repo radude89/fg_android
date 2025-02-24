@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class GatherUiState(
-    val playerTeams: Map<Player, Team> = emptyMap()
+    val teamAPlayers: List<Player> = emptyList(),
+    val teamBPlayers: List<Player> = emptyList()
 )
 
 class GatherViewModel(
@@ -34,7 +35,17 @@ class GatherViewModel(
         viewModelScope.launch {
             val mapper = PlayerTeamsJsonMapper(playerRepository)
             val playerTeams = mapper.createMap(playerTeamsJson)
-            _uiState.value = GatherUiState(playerTeams = playerTeams)
+            _uiState.value = GatherUiState(
+                teamAPlayers = filterPlayers(Team.TeamA, playerTeams),
+                teamBPlayers = filterPlayers(Team.TeamB, playerTeams)
+            )
         }
+    }
+
+    private fun filterPlayers(
+        team: Team,
+        playerTeams: Map<Player, Team>
+    ): List<Player> {
+        return playerTeams.filterValues { it == team }.keys.toList()
     }
 }
