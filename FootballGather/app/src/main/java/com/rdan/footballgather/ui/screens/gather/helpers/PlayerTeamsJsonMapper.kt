@@ -1,4 +1,4 @@
-package com.rdan.footballgather.ui.screens.gather
+package com.rdan.footballgather.ui.screens.gather.helpers
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
