@@ -266,7 +266,8 @@ private fun SelectTeamDropdownButtonTitle(
         ),
     ) {
         Text(
-            text = teamName ?: stringResource(R.string.select_team)
+            text = teamName ?: stringResource(R.string.select_team),
+            style = MaterialTheme.typography.bodySmall
         )
     }
 }

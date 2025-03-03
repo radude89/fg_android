@@ -23,6 +23,7 @@ import com.rdan.footballgather.ui.navigation.NavigationDestination
 import com.rdan.footballgather.ui.screens.gather.score.ScoreScreen
 import com.rdan.footballgather.ui.screens.gather.teamsplayers.TeamsPlayersScreen
 import com.rdan.footballgather.ui.screens.gather.teamsplayers.TeamsPlayersViewModel
+import com.rdan.footballgather.ui.screens.gather.timer.TimerControlScreen
 
 object GatherDestination : NavigationDestination {
     override val route = "gather"
@@ -81,6 +82,7 @@ private fun ContentView(
             innerPadding = contentPadding,
             modifier = modifier
         )
+        TimerControlScreen(modifier = modifier)
         TeamsPlayersScreen(
             viewModel = TeamsPlayersViewModel(
                 teamAPlayers = teamAPlayers,
