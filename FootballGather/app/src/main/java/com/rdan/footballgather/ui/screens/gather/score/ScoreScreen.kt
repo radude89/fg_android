@@ -118,12 +118,12 @@ private fun ButtonsRowView(
         )
     ) {
         IncrementDecrementButton(
-            titleID = R.string.plus,
-            onClick = onIncrement
-        )
-        IncrementDecrementButton(
             titleID = R.string.minus,
             onClick = onDecrement
+        )
+        IncrementDecrementButton(
+            titleID = R.string.plus,
+            onClick = onIncrement
         )
     }
 }
