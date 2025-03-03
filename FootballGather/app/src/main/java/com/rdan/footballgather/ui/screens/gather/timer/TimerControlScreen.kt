@@ -63,7 +63,10 @@ private fun DisplayTimeRowView(
         DisplayTimeRowContentView(onCancel, onStart)
     }
     VerticalSpacer()
-    TimerControlButton(R.string.set_time, onSetTime)
+    TimerControlButton(
+        title = R.string.set_time,
+        onClick = onSetTime
+    )
 }
 
 @Composable
@@ -71,19 +74,30 @@ private fun DisplayTimeRowContentView(
     onCancel: () -> Unit,
     onStart: () -> Unit
 ) {
-    TimerControlButton(R.string.cancel, onCancel)
+    TimerControlButton(
+        title = R.string.cancel,
+        onClick = onCancel,
+        enabled = false
+    )
     HorizontalSpacer()
     TimeView()
     HorizontalSpacer()
-    TimerControlButton(R.string.start, onStart)
+    TimerControlButton(
+        title = R.string.start,
+        onClick = onStart
+    )
 }
 
 @Composable
 private fun TimerControlButton(
     @StringRes title: Int,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    Button(onClick) {
+    Button(
+        onClick = onClick,
+        enabled = enabled
+    ) {
         Text(
             text = stringResource(title),
             style = MaterialTheme.typography.bodyMedium
