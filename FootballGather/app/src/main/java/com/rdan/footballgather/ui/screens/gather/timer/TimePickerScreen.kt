@@ -19,10 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -32,22 +28,6 @@ import com.rdan.footballgather.R
 
 @Composable
 fun TimePickerScreen(
-    initialMin: Int = 0,
-    initialSec: Int = 0
-) {
-    var minutes by remember { mutableIntStateOf(initialMin) }
-    var seconds by remember { mutableIntStateOf(initialSec) }
-
-    TimePicker(
-        selectedMinutes = minutes,
-        selectedSeconds = seconds,
-        onMinutesChanged = { minutes = it },
-        onSecondsChanged = { seconds = it }
-    )
-}
-
-@Composable
-private fun TimePicker(
     selectedMinutes: Int,
     selectedSeconds: Int,
     onMinutesChanged: (Int) -> Unit,

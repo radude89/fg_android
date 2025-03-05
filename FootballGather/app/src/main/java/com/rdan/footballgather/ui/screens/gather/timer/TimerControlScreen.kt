@@ -1,5 +1,6 @@
 package com.rdan.footballgather.ui.screens.gather.timer
 
+import android.util.Log
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,6 @@ fun TimerControlScreen(
 private fun ContentView(
     modifier: Modifier = Modifier
 ) {
-    var showTimePicker by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -47,24 +47,33 @@ private fun ContentView(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        DisplayTimeRowView(
-            onCancel = {},
-            onStart = {},
-            onSetTime = {
-                showTimePicker = true
-            }
-        )
-        if (showTimePicker) {
-            SetTimeAlertDialog(
-                onConfirm = { showTimePicker = false },
-                onDismiss = { showTimePicker = false }
-            )
-        }
+        TimerControlMainView()
     }
 }
 
 @Composable
-private fun DisplayTimeRowView(
+private fun TimerControlMainView() {
+    var showTimePicker by remember { mutableStateOf(false) }
+    TimerControlRowView(
+        onCancel = {},
+        onStart = {},
+        onSetTime = {
+            showTimePicker = true
+        }
+    )
+    if (showTimePicker) {
+        SetTimeAlertDialog(
+            onConfirm = { minutes, seconds ->
+                Log.d("SetTimeAlertDialog", "minutes: $minutes, seconds: $seconds")
+                showTimePicker = false
+            },
+            onDismiss = { showTimePicker = false }
+        )
+    }
+}
+
+@Composable
+private fun TimerControlRowView(
     onCancel: () -> Unit,
     onStart: () -> Unit,
     onSetTime: () -> Unit
@@ -73,7 +82,7 @@ private fun DisplayTimeRowView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        DisplayTimeRowContentView(onCancel, onStart)
+        TimerControlRowContentView(onCancel, onStart)
     }
     VerticalSpacer()
     TimerControlButton(
@@ -83,7 +92,7 @@ private fun DisplayTimeRowView(
 }
 
 @Composable
-private fun DisplayTimeRowContentView(
+private fun TimerControlRowContentView(
     onCancel: () -> Unit,
     onStart: () -> Unit
 ) {

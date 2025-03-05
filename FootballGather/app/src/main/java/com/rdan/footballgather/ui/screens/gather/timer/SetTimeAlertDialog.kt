@@ -7,6 +7,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -15,24 +19,38 @@ import com.rdan.footballgather.R
 
 @Composable
 fun SetTimeAlertDialog(
-    onConfirm: () -> Unit,
+    initialMin: Int = 0,
+    initialSec: Int = 0,
+    onConfirm: (Int, Int) -> Unit,
     onDismiss: () -> Unit
 ) {
+    var minutes by remember { mutableIntStateOf(initialMin) }
+    var seconds by remember { mutableIntStateOf(initialSec) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { AlertTitle() },
-        text = { TimePickerScreen() },
+        text = {
+            TimePickerScreen(
+                selectedMinutes = minutes,
+                selectedSeconds = seconds,
+                onMinutesChanged = { minutes = it },
+                onSecondsChanged = { seconds = it }
+            )
+       },
         confirmButton = {
             AlertButton(
                 titleID = R.string.confirm,
                 fontWeight = FontWeight.Bold,
-                onClick = onConfirm
+                onClick = {
+                    onConfirm(minutes, seconds)
+                }
             )
         },
         dismissButton = {
             AlertButton(
                 titleID = R.string.dismiss,
-                onClick = onConfirm
+                onClick = onDismiss
             )
         }
     )
