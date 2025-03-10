@@ -1,6 +1,5 @@
 package com.rdan.footballgather.ui.screens.gather.timer
 
-import android.util.Log
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,7 +54,12 @@ private fun ContentView(
 @Composable
 private fun TimerControlMainView() {
     var showTimePicker by remember { mutableStateOf(false) }
+    var minutes by remember { mutableIntStateOf(0) }
+    var seconds by remember { mutableIntStateOf(0) }
+
     TimerControlRowView(
+        selectedMin = minutes,
+        selectedSec = seconds,
         onCancel = {},
         onStart = {},
         onSetTime = {
@@ -63,8 +68,11 @@ private fun TimerControlMainView() {
     )
     if (showTimePicker) {
         SetTimeAlertDialog(
-            onConfirm = { minutes, seconds ->
-                Log.d("SetTimeAlertDialog", "minutes: $minutes, seconds: $seconds")
+            initialMin = minutes,
+            initialSec = seconds,
+            onConfirm = { min, sec ->
+                minutes = min
+                seconds = sec
                 showTimePicker = false
             },
             onDismiss = { showTimePicker = false }
@@ -74,6 +82,8 @@ private fun TimerControlMainView() {
 
 @Composable
 private fun TimerControlRowView(
+    selectedMin: Int,
+    selectedSec: Int,
     onCancel: () -> Unit,
     onStart: () -> Unit,
     onSetTime: () -> Unit
@@ -82,7 +92,12 @@ private fun TimerControlRowView(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        TimerControlRowContentView(onCancel, onStart)
+        TimerControlRowContentView(
+            selectedMin = selectedMin,
+            selectedSec = selectedSec,
+            onCancel = onCancel,
+            onStart = onStart
+        )
     }
     VerticalSpacer()
     TimerControlButton(
@@ -93,6 +108,8 @@ private fun TimerControlRowView(
 
 @Composable
 private fun TimerControlRowContentView(
+    selectedMin: Int,
+    selectedSec: Int,
     onCancel: () -> Unit,
     onStart: () -> Unit
 ) {
@@ -102,7 +119,7 @@ private fun TimerControlRowContentView(
         enabled = false
     )
     HorizontalSpacer()
-    TimeView()
+    TimeView(selectedMin, selectedSec)
     HorizontalSpacer()
     TimerControlButton(
         title = R.string.start,
@@ -128,9 +145,14 @@ private fun TimerControlButton(
 }
 
 @Composable
-private fun TimeView() {
+private fun TimeView(
+    minutes: Int,
+    seconds: Int
+) {
+    val formattedMinutes = minutes.toString().padStart(2, '0')
+    val formattedSeconds = seconds.toString().padStart(2, '0')
     Text(
-        text = "00:00",
+        text = "$formattedMinutes:$formattedSeconds",
         style = MaterialTheme.typography.titleMedium,
         textAlign = TextAlign.Center
     )
