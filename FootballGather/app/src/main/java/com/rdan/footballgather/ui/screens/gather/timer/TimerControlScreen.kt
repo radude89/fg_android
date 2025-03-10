@@ -29,15 +29,20 @@ import com.rdan.footballgather.R
 
 @Composable
 fun TimerControlScreen(
+    viewModel: TimerControlViewModel = TimerControlViewModel(),
     modifier: Modifier = Modifier
 ) {
     Card(modifier.fillMaxWidth()) {
-        ContentView(modifier)
+        ContentView(
+            viewModel = viewModel,
+            modifier = modifier
+        )
     }
 }
 
 @Composable
 private fun ContentView(
+    viewModel: TimerControlViewModel,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -47,24 +52,26 @@ private fun ContentView(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TimerControlMainView()
+        TimerControlMainView(viewModel)
     }
 }
 
 @Composable
-private fun TimerControlMainView() {
+private fun TimerControlMainView(
+    viewModel: TimerControlViewModel
+) {
     var showTimePicker by remember { mutableStateOf(false) }
     var minutes by remember { mutableIntStateOf(0) }
     var seconds by remember { mutableIntStateOf(0) }
+    val uiState = viewModel.uiState
 
     TimerControlRowView(
+        uiState = uiState,
         selectedMin = minutes,
         selectedSec = seconds,
-        onCancel = {},
-        onStart = {},
-        onSetTime = {
-            showTimePicker = true
-        }
+        onCancel = viewModel::onCancelClicked,
+        onStart = viewModel::onStartOrPauseClicked,
+        onSetTime = { showTimePicker = true }
     )
     if (showTimePicker) {
         SetTimeAlertDialog(
@@ -82,6 +89,7 @@ private fun TimerControlMainView() {
 
 @Composable
 private fun TimerControlRowView(
+    uiState: TimerControlUiState,
     selectedMin: Int,
     selectedSec: Int,
     onCancel: () -> Unit,
@@ -93,6 +101,7 @@ private fun TimerControlRowView(
         horizontalArrangement = Arrangement.Center
     ) {
         TimerControlRowContentView(
+            uiState = uiState,
             selectedMin = selectedMin,
             selectedSec = selectedSec,
             onCancel = onCancel,
@@ -102,12 +111,14 @@ private fun TimerControlRowView(
     VerticalSpacer()
     TimerControlButton(
         title = R.string.set_time,
-        onClick = onSetTime
+        onClick = onSetTime,
+        enabled = uiState.isSetTimeEnabled
     )
 }
 
 @Composable
 private fun TimerControlRowContentView(
+    uiState: TimerControlUiState,
     selectedMin: Int,
     selectedSec: Int,
     onCancel: () -> Unit,
@@ -116,13 +127,13 @@ private fun TimerControlRowContentView(
     TimerControlButton(
         title = R.string.cancel,
         onClick = onCancel,
-        enabled = false
+        enabled = uiState.isCancelEnabled
     )
     HorizontalSpacer()
     TimeView(selectedMin, selectedSec)
     HorizontalSpacer()
     TimerControlButton(
-        title = R.string.start,
+        title = uiState.startButtonText,
         onClick = onStart
     )
 }
