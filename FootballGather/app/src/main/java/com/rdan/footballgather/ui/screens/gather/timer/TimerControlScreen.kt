@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,11 +63,17 @@ private fun TimerControlMainView(
     var showTimePicker by remember { mutableStateOf(false) }
     val uiState = viewModel.uiState
 
+    LaunchedEffect(viewModel.isRunning) {
+        if (viewModel.isRunning) {
+            viewModel.startCountdown()
+        }
+    }
+
     TimerControlRowView(
         viewModel = viewModel,
         uiState = uiState,
-        onCancel = viewModel::onCancelClicked,
-        onStart = viewModel::onStartOrPauseClicked,
+        onCancel = viewModel::onCancel,
+        onStart = viewModel::onStartOrPause,
         onSetTime = { showTimePicker = true }
     )
     if (showTimePicker) {

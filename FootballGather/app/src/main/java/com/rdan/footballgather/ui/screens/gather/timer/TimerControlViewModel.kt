@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.rdan.footballgather.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 sealed class TimerState {
     data object Idle : TimerState()
@@ -25,11 +28,8 @@ class TimerControlViewModel : ViewModel() {
     companion object {
         const val INITIAL_MIN = 10
         const val INITIAL_SEC = 0
+        const val SECONDS_UPPER_BOUND = 59
     }
-
-    var uiState by mutableStateOf(TimerControlUiState())
-        private set
-
     private var initialMin = INITIAL_MIN
     private var initialSec = INITIAL_SEC
 
@@ -42,18 +42,73 @@ class TimerControlViewModel : ViewModel() {
     val formattedRemainingSec: String
         get() { return formatTimeUnit(remainingSec) }
 
+    private fun formatTimeUnit(timeUnit: Int): String {
+        return timeUnit.toString().padStart(2, '0')
+    }
+
+    var uiState by mutableStateOf(TimerControlUiState())
+        private set
+
     var isRunning by mutableStateOf(false)
         private set
+
+    fun startCountdown() {
+        viewModelScope.launch {
+            while (isRunning && (remainingMin > 0 || remainingSec > 0)) {
+                handleTimerTick()
+                pauseForOneSecond()
+            }
+            stopTimerIfNeeded()
+        }
+    }
+
+    private fun handleTimerTick() {
+        if (!decrementSecondsIfPossible()) {
+            decrementMinutesIfPossible()
+        }
+    }
+
+    private suspend fun pauseForOneSecond() {
+        delay(1000L)
+    }
+
+    private fun decrementSecondsIfPossible(): Boolean {
+        if (remainingSec > 0) {
+            remainingSec--
+            return true
+        }
+        return false
+    }
+
+    private fun decrementMinutesIfPossible(): Boolean {
+        if (remainingMin > 0) {
+            remainingMin--
+            remainingSec = SECONDS_UPPER_BOUND
+            return true
+        }
+        return false
+    }
+
+    private fun stopTimerIfNeeded() {
+        if(timerHasReachedZero() && isRunning) {
+            setTime(initialMin, initialSec)
+        }
+    }
+
+    private fun timerHasReachedZero(): Boolean {
+        return remainingMin == 0 && remainingSec == 0
+    }
 
     fun setTime(min: Int, sec: Int) {
         initialMin = min
         initialSec = sec
         remainingMin = min
         remainingSec = sec
-        onCancelClicked()
     }
 
-    fun onCancelClicked() {
+    fun onCancel() {
+        // TODO: Radu - resolve problem where when clicking on cancel, the time is not reset.
+        isRunning = false
         uiState = uiState.copy(
             timerState = TimerState.Idle,
             startButtonText = R.string.start,
@@ -62,18 +117,15 @@ class TimerControlViewModel : ViewModel() {
         )
     }
 
-    fun onStartOrPauseClicked() {
+    fun onStartOrPause() {
         when (uiState.timerState) {
-            TimerState.Idle, TimerState.Paused -> onStartOrResumeClicked()
-            TimerState.Running -> onPauseClicked()
+            TimerState.Idle, TimerState.Paused -> onStartOrResume()
+            TimerState.Running -> onPause()
         }
     }
 
-    private fun formatTimeUnit(timeUnit: Int): String {
-        return timeUnit.toString().padStart(2, '0')
-    }
-
-    private fun onStartOrResumeClicked() {
+    private fun onStartOrResume() {
+        isRunning = true
         uiState = uiState.copy(
             timerState = TimerState.Running,
             startButtonText = R.string.pause,
@@ -82,7 +134,8 @@ class TimerControlViewModel : ViewModel() {
         )
     }
 
-    private fun onPauseClicked() {
+    private fun onPause() {
+        isRunning = false
         uiState = uiState.copy(
             timerState = TimerState.Paused,
             startButtonText = R.string.resume,
