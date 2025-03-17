@@ -11,6 +11,7 @@ import com.rdan.footballgather.ui.screens.confirm.PlayersConfirmationViewModel
 import com.rdan.footballgather.ui.screens.details.PlayerDetailsViewModel
 import com.rdan.footballgather.ui.screens.edit.PlayerEditViewModel
 import com.rdan.footballgather.ui.screens.gather.GatherViewModel
+import com.rdan.footballgather.ui.screens.gather.timer.TimerControlViewModel
 import com.rdan.footballgather.ui.screens.list.PlayerListViewModel
 
 object AppViewModelProvider {
@@ -47,6 +48,9 @@ object AppViewModelProvider {
                 savedStateHandle = this.createSavedStateHandle(),
                 playerRepository = footballGatherApplication().container.appRepository
             )
+        }
+        initializer {
+            TimerControlViewModel()
         }
     }
 }

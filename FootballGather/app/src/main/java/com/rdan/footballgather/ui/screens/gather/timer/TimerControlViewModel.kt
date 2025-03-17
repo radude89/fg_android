@@ -25,7 +25,7 @@ data class TimerControlUiState(
 )
 
 class TimerControlViewModel : ViewModel() {
-    companion object {
+    private companion object {
         const val INITIAL_MIN = 10
         const val INITIAL_SEC = 0
         const val SECONDS_UPPER_BOUND = 59
@@ -50,6 +50,9 @@ class TimerControlViewModel : ViewModel() {
         private set
 
     var isRunning by mutableStateOf(false)
+        private set
+
+    var timerFininshed by mutableStateOf(false)
         private set
 
     fun startCountdown() {
@@ -92,6 +95,7 @@ class TimerControlViewModel : ViewModel() {
     private fun stopTimerIfNeeded() {
         if(timerHasReachedZero() && isRunning) {
             onCancel()
+            timerFininshed = true
         }
     }
 

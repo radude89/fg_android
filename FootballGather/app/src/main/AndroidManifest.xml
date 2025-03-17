@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:name=".FootballGatherApplication"
         android:allowBackup="true"
@@ -16,7 +17,6 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.FootballGather">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

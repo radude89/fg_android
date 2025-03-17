@@ -22,15 +22,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
+import com.rdan.footballgather.ui.AppViewModelProvider
 
 @Composable
 fun TimerControlScreen(
     modifier: Modifier = Modifier,
-    viewModel: TimerControlViewModel = TimerControlViewModel()
+    viewModel: TimerControlViewModel = viewModel(
+        factory = AppViewModelProvider.Factory
+    ),
 ) {
     Card(modifier.fillMaxWidth()) {
         ContentView(
@@ -63,11 +68,7 @@ private fun TimerControlMainView(
     var showTimePicker by remember { mutableStateOf(false) }
     val uiState = viewModel.uiState
 
-    LaunchedEffect(viewModel.isRunning) {
-        if (viewModel.isRunning) {
-            viewModel.startCountdown()
-        }
-    }
+    LaunchedEffects(viewModel)
 
     TimerControlRowView(
         viewModel = viewModel,
@@ -86,6 +87,26 @@ private fun TimerControlMainView(
             },
             onDismiss = { showTimePicker = false }
         )
+    }
+}
+
+@Composable
+private fun LaunchedEffects(
+    viewModel: TimerControlViewModel
+) {
+    val context = LocalContext.current
+    val notificationHandler = NotificationHandler()
+
+    LaunchedEffect(viewModel.isRunning) {
+        if (viewModel.isRunning) {
+            viewModel.startCountdown()
+        }
+    }
+
+    LaunchedEffect(viewModel.timerFininshed) {
+        if (viewModel.timerFininshed) {
+            notificationHandler.showTimerFinishedNotification(context)
+        }
     }
 }
 

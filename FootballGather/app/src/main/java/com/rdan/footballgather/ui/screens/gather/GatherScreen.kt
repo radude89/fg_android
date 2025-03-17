@@ -35,11 +35,11 @@ object GatherDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GatherScreen(
+    modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     viewModel: GatherViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
-    modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
