@@ -91,7 +91,7 @@ class TimerControlViewModel : ViewModel() {
 
     private fun stopTimerIfNeeded() {
         if(timerHasReachedZero() && isRunning) {
-            setTime(initialMin, initialSec)
+            onCancel()
         }
     }
 
@@ -107,7 +107,7 @@ class TimerControlViewModel : ViewModel() {
     }
 
     fun onCancel() {
-        // TODO: Radu - resolve problem where when clicking on cancel, the time is not reset.
+        setTime(initialMin, initialSec)
         isRunning = false
         uiState = uiState.copy(
             timerState = TimerState.Idle,
