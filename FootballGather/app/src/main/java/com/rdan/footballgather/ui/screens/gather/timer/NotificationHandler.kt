@@ -19,6 +19,9 @@ class NotificationHandler {
 
     fun showTimerFinishedNotification(context: Context) {
         val notificationManager = createNotificationManager(context)
+        if (!notificationManager.areNotificationsEnabled()) {
+            return
+        }
         createNotificationChannel(notificationManager)
         notificationManager.notify(
             NOTIFICATION_ID, createNotification(context)
@@ -47,11 +50,10 @@ class NotificationHandler {
     private fun createNotification(
         context: Context
     ): Notification {
-        // TODO: Check why is not resuming the app but recreating the whole stack
-        // TODO: Ask for permissions before triggering the notification
         val intent = Intent(context, MainActivity::class.java)
             .apply {
-                flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
         val pendingIntent = PendingIntent.getActivity(
             context, 0, intent, PendingIntent.FLAG_IMMUTABLE

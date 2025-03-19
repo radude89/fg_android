@@ -28,13 +28,13 @@ import com.rdan.footballgather.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultAlertDialog(
+    modifier: Modifier = Modifier,
     @StringRes titleTextID: Int = R.string.attention,
     @StringRes contentMessageID: Int,
     @StringRes dismissButtonTitleID: Int = R.string.confirm,
     @StringRes confirmButtonTitleID: Int? = null,
     onDismissRequest: () -> Unit,
-    onConfirmRequest: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
+    onConfirmRequest: (() -> Unit)? = null
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,

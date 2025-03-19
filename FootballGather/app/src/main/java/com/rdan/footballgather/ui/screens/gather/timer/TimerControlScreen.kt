@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
 import com.rdan.footballgather.ui.AppViewModelProvider
+import com.rdan.footballgather.ui.components.alertdialogs.DefaultAlertDialog
 
 @Composable
 fun TimerControlScreen(
@@ -66,37 +67,41 @@ private fun TimerControlMainView(
     viewModel: TimerControlViewModel
 ) {
     var showTimePicker by remember { mutableStateOf(false) }
-    val uiState = viewModel.uiState
+    var showFinishedAlert by remember { mutableStateOf(false) }
+    val notificationHandler = NotificationHandler()
+    val context = LocalContext.current
 
-    LaunchedEffects(viewModel)
+    LaunchedEffects(
+        viewModel = viewModel,
+        onTimerFinished = {
+            notificationHandler.showTimerFinishedNotification(context)
+            showFinishedAlert = true
+        }
+    )
 
     TimerControlRowView(
         viewModel = viewModel,
-        uiState = uiState,
+        uiState = viewModel.uiState,
         onCancel = viewModel::onCancel,
         onStart = viewModel::onStartOrPause,
         onSetTime = { showTimePicker = true }
     )
     if (showTimePicker) {
-        SetTimeAlertDialog(
-            initialMin = viewModel.remainingMin,
-            initialSec = viewModel.remainingSec,
-            onConfirm = { min, sec ->
-                viewModel.setTime(min, sec)
-                showTimePicker = false
-            },
+        SetTimerAlertDialog(
+            viewModel,
             onDismiss = { showTimePicker = false }
         )
+    }
+    if (showFinishedAlert) {
+        GatherCompletedAlert { showFinishedAlert = false }
     }
 }
 
 @Composable
 private fun LaunchedEffects(
-    viewModel: TimerControlViewModel
+    viewModel: TimerControlViewModel,
+    onTimerFinished: () -> Unit
 ) {
-    val context = LocalContext.current
-    val notificationHandler = NotificationHandler()
-
     LaunchedEffect(viewModel.isRunning) {
         if (viewModel.isRunning) {
             viewModel.startCountdown()
@@ -105,9 +110,37 @@ private fun LaunchedEffects(
 
     LaunchedEffect(viewModel.timerFininshed) {
         if (viewModel.timerFininshed) {
-            notificationHandler.showTimerFinishedNotification(context)
+            onTimerFinished()
         }
     }
+}
+
+@Composable
+private fun GatherCompletedAlert(
+    onDismiss: () -> Unit
+) {
+    DefaultAlertDialog(
+        titleTextID = R.string.notification_title,
+        contentMessageID = R.string.notification_content,
+        dismissButtonTitleID = R.string.ok,
+        onDismissRequest = onDismiss
+    )
+}
+
+@Composable
+private fun SetTimerAlertDialog(
+    viewModel: TimerControlViewModel,
+    onDismiss: () -> Unit
+) {
+    SetTimeAlertDialog(
+        initialMin = viewModel.remainingMin,
+        initialSec = viewModel.remainingSec,
+        onConfirm = { min, sec ->
+            viewModel.setTime(min, sec)
+            onDismiss()
+        },
+        onDismiss = onDismiss
+    )
 }
 
 @Composable

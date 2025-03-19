@@ -55,12 +55,12 @@ object PlayersConfirmationDestination : NavigationDestination {
 
 @Composable
 fun PlayersConfirmationScreen(
+    modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     navigateToGatherScreen: (String) -> Unit,
     viewModel: PlayersConfirmationViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
-    modifier: Modifier = Modifier
 ) {
     val openDialog = remember { mutableStateOf(false) }
     MainContent(
