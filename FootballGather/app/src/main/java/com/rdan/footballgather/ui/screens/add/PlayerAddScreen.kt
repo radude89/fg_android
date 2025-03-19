@@ -35,11 +35,11 @@ object PlayerAddDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerAddScreen(
+    modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     viewModel: PlayerAddViewModel = viewModel(
         factory = AppViewModelProvider.Factory
-    ),
-    modifier: Modifier = Modifier
+    )
 ) {
     val coroutineScope = rememberCoroutineScope()
     Scaffold(

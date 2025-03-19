@@ -122,22 +122,22 @@ private fun FloatingActionButtonsView(
                 navigateToEditPlayer(uiState.value.playerDetails.id)
             }
         )
-        if (deleteConfirmationRequired) {
-            DefaultAlertDialog(
-                contentMessageID = R.string.delete_question,
-                dismissButtonTitleID = R.string.no,
-                confirmButtonTitleID = R.string.yes,
-                onDismissRequest = { deleteConfirmationRequired = false },
-                onConfirmRequest = {
-                    deleteConfirmationRequired = false
-                    coroutineScope.launch {
-                        viewModel.deletePlayer()
-                        navigateBack()
-                    }
-                },
-                modifier = modifier
-            )
-        }
+    }
+    if (deleteConfirmationRequired) {
+        DefaultAlertDialog(
+            contentMessageID = R.string.delete_question,
+            dismissButtonTitleID = R.string.no,
+            confirmButtonTitleID = R.string.yes,
+            onDismissRequest = { deleteConfirmationRequired = false },
+            onConfirmRequest = {
+                deleteConfirmationRequired = false
+                coroutineScope.launch {
+                    viewModel.deletePlayer()
+                    navigateBack()
+                }
+            },
+            modifier = modifier
+        )
     }
 }
 
