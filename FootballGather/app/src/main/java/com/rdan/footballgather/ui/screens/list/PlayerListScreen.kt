@@ -1,5 +1,6 @@
 package com.rdan.footballgather.ui.screens.list
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -60,6 +62,7 @@ fun PlayerListScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val playerListUiState by viewModel.playerListUiState.collectAsState()
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -71,11 +74,18 @@ fun PlayerListScreen(
             )
         },
         floatingActionButton = {
-            Column {
-                if (playerListUiState.playerList.size > 1) {
-                    ConfirmPlayersButton(onClick = navigateToConfirmPlayers)
-                }
-                AddButton(onClick = navigateToAddPlayer)
+            if (isLandscape) {
+                FloatingActionButtonsInLandscape(
+                    playerListUiState = playerListUiState,
+                    onConfirm = navigateToConfirmPlayers,
+                    onAdd = navigateToAddPlayer
+                )
+            } else {
+                FloatingActionButtonsInPortrait(
+                    playerListUiState = playerListUiState,
+                    onConfirm = navigateToConfirmPlayers,
+                    onAdd = navigateToAddPlayer
+                )
             }
         }
     ) { contentPadding ->
@@ -93,7 +103,48 @@ fun PlayerListScreen(
 }
 
 @Composable
+private fun FloatingActionButtonsInLandscape(
+    playerListUiState: PlayerUiState,
+    onConfirm: () -> Unit,
+    onAdd: () -> Unit
+) {
+    Row {
+        if (playerListUiState.playerList.size > 1) {
+            ConfirmPlayersButton(
+                isLandscape = true,
+                onClick = onConfirm
+            )
+        }
+        AddButton(
+            isLandscape = true,
+            onClick = onAdd
+        )
+    }
+}
+
+@Composable
+private fun FloatingActionButtonsInPortrait(
+    playerListUiState: PlayerUiState,
+    onConfirm: () -> Unit,
+    onAdd: () -> Unit
+) {
+    Column {
+        if (playerListUiState.playerList.size > 1) {
+            ConfirmPlayersButton(
+                isLandscape = false,
+                onClick = onConfirm
+            )
+        }
+        AddButton(
+            isLandscape = false,
+            onClick = onAdd
+        )
+    }
+}
+
+@Composable
 private fun AddButton(
+    isLandscape: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -101,7 +152,12 @@ private fun AddButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
         modifier = modifier
-            .padding(dimensionResource(R.dimen.padding_large))
+            .padding(
+                dimensionResource(
+                    if (isLandscape) R.dimen.padding_medium
+                    else R.dimen.padding_large
+                )
+            )
 
     ) {
         Icon(
@@ -113,14 +169,18 @@ private fun AddButton(
 
 @Composable
 private fun ConfirmPlayersButton(
+    isLandscape: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val buttonModifier = if (isLandscape)
+        modifier.padding(vertical = dimensionResource(R.dimen.padding_medium))
+    else
+        modifier.padding(horizontal = dimensionResource(R.dimen.padding_large))
     FloatingActionButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        modifier = modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
+        modifier = buttonModifier
     ) {
         Icon(
             imageVector = Icons.Default.Check,

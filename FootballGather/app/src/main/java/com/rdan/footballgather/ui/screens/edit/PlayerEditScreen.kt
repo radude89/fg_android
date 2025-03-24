@@ -1,5 +1,6 @@
 package com.rdan.footballgather.ui.screens.edit
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -17,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -38,11 +40,11 @@ object PlayerEditDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerEditScreen(
+    modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     viewModel: PlayerEditViewModel = viewModel(
         factory = AppViewModelProvider.Factory
-    ),
-    modifier: Modifier = Modifier
+    )
 ) {
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
@@ -76,11 +78,17 @@ private fun SaveFloatingButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     FloatingActionButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
         modifier = modifier
-            .padding(dimensionResource(R.dimen.padding_large))
+            .padding(
+                dimensionResource(
+                    if (isLandscape) R.dimen.padding_medium
+                    else R.dimen.padding_large
+                )
+            )
 
     ) {
         Icon(

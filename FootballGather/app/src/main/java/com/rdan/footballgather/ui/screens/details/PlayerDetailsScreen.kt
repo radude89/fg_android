@@ -1,6 +1,7 @@
 package com.rdan.footballgather.ui.screens.details
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -113,36 +115,85 @@ private fun FloatingActionButtonsView(
     modifier: Modifier = Modifier
 ) {
     var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
-    Column {
-        DeleteFloatingButton(
-            onClick = { deleteConfirmationRequired = true }
+
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        LandscapeOrientationButtonsView(
+            onDelete = { deleteConfirmationRequired = true },
+            onEdit = { navigateToEditPlayer(uiState.value.playerDetails.id) }
         )
-        EditFloatingButton(
-            onClick = {
-                navigateToEditPlayer(uiState.value.playerDetails.id)
-            }
+    } else {
+        PortraitOrientationButtonsView(
+            onDelete = { deleteConfirmationRequired = true },
+            onEdit = { navigateToEditPlayer(uiState.value.playerDetails.id) }
         )
     }
     if (deleteConfirmationRequired) {
-        DefaultAlertDialog(
-            contentMessageID = R.string.delete_question,
-            dismissButtonTitleID = R.string.no,
-            confirmButtonTitleID = R.string.yes,
-            onDismissRequest = { deleteConfirmationRequired = false },
-            onConfirmRequest = {
-                deleteConfirmationRequired = false
+        DeleteConfirmationAlert(
+            modifier = modifier,
+            onConfirm = {
                 coroutineScope.launch {
                     viewModel.deletePlayer()
                     navigateBack()
                 }
             },
-            modifier = modifier
+            onDismiss = { deleteConfirmationRequired = false }
+        )
+    }
+}
+
+@Composable
+private fun DeleteConfirmationAlert(
+    modifier: Modifier = Modifier,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    DefaultAlertDialog(
+        contentMessageID = R.string.delete_question,
+        dismissButtonTitleID = R.string.no,
+        confirmButtonTitleID = R.string.yes,
+        onDismissRequest = onDismiss,
+        onConfirmRequest = onConfirm,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun LandscapeOrientationButtonsView(
+    onDelete: () -> Unit,
+    onEdit: () -> Unit
+) {
+    Row {
+        DeleteFloatingButton(
+            isLandscape = true,
+            onClick = onDelete
+        )
+        EditFloatingButton(
+            isLandscape = true,
+            onClick = onEdit
+        )
+    }
+}
+
+@Composable
+private fun PortraitOrientationButtonsView(
+    onDelete: () -> Unit,
+    onEdit: () -> Unit
+) {
+    Column {
+        DeleteFloatingButton(
+            isLandscape = false,
+            onClick = onDelete
+        )
+        EditFloatingButton(
+            isLandscape = false,
+            onClick = onEdit
         )
     }
 }
 
 @Composable
 private fun EditFloatingButton(
+    isLandscape: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -150,7 +201,12 @@ private fun EditFloatingButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
         modifier = modifier
-            .padding(dimensionResource(R.dimen.padding_large))
+            .padding(
+                dimensionResource(
+                    if (isLandscape) R.dimen.padding_medium
+                    else R.dimen.padding_large
+                )
+            )
 
     ) {
         Icon(
@@ -162,15 +218,19 @@ private fun EditFloatingButton(
 
 @Composable
 private fun DeleteFloatingButton(
+    isLandscape: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val buttonModifier = if (isLandscape) {
+        modifier.padding(vertical = dimensionResource(R.dimen.padding_medium))
+    } else {
+        modifier.padding(horizontal = dimensionResource(R.dimen.padding_large))
+    }
     FloatingActionButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        modifier = modifier
-            .padding(horizontal = dimensionResource(R.dimen.padding_large))
-
+        modifier = buttonModifier
     ) {
         Icon(
             imageVector = Icons.Default.Delete,

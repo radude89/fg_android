@@ -1,5 +1,6 @@
 package com.rdan.footballgather.ui.screens.confirm
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -128,11 +130,17 @@ private fun ConfirmFloatingButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     FloatingActionButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
         modifier = modifier
-            .padding(dimensionResource(R.dimen.padding_large))
+            .padding(
+                dimensionResource(
+                    if (isLandscape) R.dimen.padding_medium
+                    else R.dimen.padding_large
+                )
+            )
 
     ) {
         Icon(
