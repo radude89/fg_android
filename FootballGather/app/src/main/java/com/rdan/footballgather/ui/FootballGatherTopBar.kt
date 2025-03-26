@@ -17,11 +17,11 @@ import com.rdan.footballgather.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FootballGatherTopBar(
+    modifier: Modifier = Modifier,
     title: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     canNavigateBack: Boolean = true,
-    navigateBack: () -> Unit = {},
-    modifier: Modifier = Modifier
+    navigateBack: () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,

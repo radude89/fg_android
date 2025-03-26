@@ -1,5 +1,6 @@
 package com.rdan.footballgather.ui.screens.gather
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,12 +9,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Player
@@ -36,13 +40,14 @@ object GatherDestination : NavigationDestination {
 @Composable
 fun GatherScreen(
     modifier: Modifier = Modifier,
-    navigateBack: () -> Unit,
     viewModel: GatherViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
+
+    BackButtonEffect()
 
     Scaffold(
         modifier = modifier
@@ -51,7 +56,7 @@ fun GatherScreen(
             FootballGatherTopBar(
                 title = stringResource(R.string.gather),
                 scrollBehavior = scrollBehavior,
-                navigateBack = navigateBack
+                canNavigateBack = false
             )
         }
     ) { contentPadding ->
@@ -61,6 +66,28 @@ fun GatherScreen(
             contentPadding = contentPadding,
             modifier = modifier
         )
+    }
+}
+
+@Composable
+private fun BackButtonEffect() {
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner
+        .current?.onBackPressedDispatcher
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val backCallback = remember {
+        object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Do nothing, preventing back navigation
+            }
+        }
+    }
+
+    DisposableEffect(lifecycleOwner, onBackPressedDispatcher) {
+        onBackPressedDispatcher?.addCallback(lifecycleOwner, backCallback)
+        onDispose {
+            backCallback.remove()
+        }
     }
 }
 

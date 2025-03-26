@@ -95,9 +95,7 @@ fun AppNavHost(
                 }
             )
         ) {
-            GatherScreen(
-                navigateBack = { navController.popBackStack() }
-            )
+            GatherScreen()
         }
     }
 }
