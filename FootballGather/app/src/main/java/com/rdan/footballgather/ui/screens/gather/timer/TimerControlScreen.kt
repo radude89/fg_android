@@ -1,5 +1,6 @@
 package com.rdan.footballgather.ui.screens.gather.timer
 
+import android.util.Log
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -103,13 +104,15 @@ private fun LaunchedEffects(
     onTimerFinished: () -> Unit
 ) {
     LaunchedEffect(viewModel.isRunning) {
+        Log.d("FG - LaunchedEffect", "isRunning: ${viewModel.isRunning}")
         if (viewModel.isRunning) {
             viewModel.startCountdown()
         }
     }
 
-    LaunchedEffect(viewModel.timerFininshed) {
-        if (viewModel.timerFininshed) {
+    LaunchedEffect(viewModel.timerFinished) {
+        Log.d("FG - LaunchedEffect", "timerFininshed: ${viewModel.timerFinished}")
+        if (viewModel.timerFinished) {
             onTimerFinished()
         }
     }

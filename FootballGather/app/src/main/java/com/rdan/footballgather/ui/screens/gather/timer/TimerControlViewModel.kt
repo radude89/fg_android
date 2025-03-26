@@ -52,10 +52,11 @@ class TimerControlViewModel : ViewModel() {
     var isRunning by mutableStateOf(false)
         private set
 
-    var timerFininshed by mutableStateOf(false)
+    var timerFinished by mutableStateOf(false)
         private set
 
     fun startCountdown() {
+        timerFinished = false
         viewModelScope.launch {
             while (isRunning && (remainingMin > 0 || remainingSec > 0)) {
                 handleTimerTick()
@@ -95,7 +96,7 @@ class TimerControlViewModel : ViewModel() {
     private fun stopTimerIfNeeded() {
         if(timerHasReachedZero() && isRunning) {
             onCancel()
-            timerFininshed = true
+            timerFinished = true
         }
     }
 
