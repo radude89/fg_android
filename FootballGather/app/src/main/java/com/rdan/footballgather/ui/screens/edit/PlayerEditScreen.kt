@@ -86,10 +86,9 @@ private fun SaveFloatingButton(
             .padding(
                 dimensionResource(
                     if (isLandscape) R.dimen.padding_medium
-                    else R.dimen.padding_large
+                    else R.dimen.padding_small
                 )
             )
-
     ) {
         Icon(
             imageVector = Icons.Default.Done,

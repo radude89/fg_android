@@ -204,7 +204,7 @@ private fun EditFloatingButton(
             .padding(
                 dimensionResource(
                     if (isLandscape) R.dimen.padding_medium
-                    else R.dimen.padding_large
+                    else R.dimen.padding_small
                 )
             )
 
@@ -225,7 +225,10 @@ private fun DeleteFloatingButton(
     val buttonModifier = if (isLandscape) {
         modifier.padding(vertical = dimensionResource(R.dimen.padding_medium))
     } else {
-        modifier.padding(horizontal = dimensionResource(R.dimen.padding_large))
+        modifier.padding(
+            horizontal = dimensionResource(R.dimen.padding_small),
+            vertical = dimensionResource(R.dimen.padding_mediumLarge),
+        )
     }
     FloatingActionButton(
         onClick = onClick,

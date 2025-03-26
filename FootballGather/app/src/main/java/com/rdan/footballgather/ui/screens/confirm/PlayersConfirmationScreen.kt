@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -70,7 +70,7 @@ fun PlayersConfirmationScreen(
         onShowSelectTeamsDialog = { openDialog.value = true },
         navigateBack = navigateBack,
         navigateToGatherScreen = navigateToGatherScreen,
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     )
     if (openDialog.value) {
         DefaultAlertDialog(
@@ -93,11 +93,11 @@ private fun MainContent(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
     Scaffold(
-        modifier = modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             FootballGatherTopBar(
                 title = stringResource(R.string.confirm_players),
+                scrollBehavior = scrollBehavior,
                 navigateBack = navigateBack
             )
         },
@@ -111,8 +111,7 @@ private fun MainContent(
                             viewModel.getPlayerTeamsJson()
                         )
                     }
-                },
-                modifier = modifier
+                }
             )
         }
     ) { contentPadding ->
@@ -138,10 +137,9 @@ private fun ConfirmFloatingButton(
             .padding(
                 dimensionResource(
                     if (isLandscape) R.dimen.padding_medium
-                    else R.dimen.padding_large
+                    else R.dimen.padding_small
                 )
             )
-
     ) {
         Icon(
             imageVector = Icons.Default.PlayArrow,
@@ -161,7 +159,8 @@ private fun ColumnView(
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(
             dimensionResource(R.dimen.padding_mediumLarge)
-        )
+        ),
+        modifier = modifier
     ) {
         items(uiState.playerList) { player ->
             PlayerItem(
@@ -181,12 +180,10 @@ private fun PlayerItem(
 ) {
     Card(
         modifier
-            .fillMaxWidth()
             .padding(horizontal = dimensionResource(R.dimen.padding_medium))
     ) {
         Column(
-            Modifier
-                .padding(dimensionResource(R.dimen.padding_medium))
+            modifier.padding(dimensionResource(R.dimen.padding_medium))
         ) {
             CardTitle(
                 player = player,
