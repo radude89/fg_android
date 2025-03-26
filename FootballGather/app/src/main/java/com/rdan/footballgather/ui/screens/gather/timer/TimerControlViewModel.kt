@@ -56,7 +56,6 @@ class TimerControlViewModel : ViewModel() {
         private set
 
     fun startCountdown() {
-        timerFinished = false
         viewModelScope.launch {
             while (isRunning && (remainingMin > 0 || remainingSec > 0)) {
                 handleTimerTick()
@@ -97,6 +96,15 @@ class TimerControlViewModel : ViewModel() {
         if(timerHasReachedZero() && isRunning) {
             onCancel()
             timerFinished = true
+            resetFlags()
+        }
+    }
+
+    private fun resetFlags() {
+        viewModelScope.launch {
+            delay(200L)
+            timerFinished = false
+            isRunning = false
         }
     }
 

@@ -1,5 +1,8 @@
 package com.rdan.footballgather.ui.screens.gather
 
+import android.content.Context
+import android.content.pm.ActivityInfo
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -47,8 +51,7 @@ fun GatherScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
 
-    BackButtonEffect()
-
+    DisposableEffects()
     Scaffold(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -66,6 +69,29 @@ fun GatherScreen(
             contentPadding = contentPadding,
             modifier = modifier
         )
+    }
+}
+
+@Composable
+private fun DisposableEffects() {
+    val context = LocalContext.current
+    LockScreenOrientation(
+        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+        context = context
+    )
+    BackButtonEffect()
+}
+
+@Composable
+fun LockScreenOrientation(orientation: Int, context: Context) {
+    val activity = remember { context as? ComponentActivity }
+    DisposableEffect(Unit) {
+        val originalOrientation = activity?.requestedOrientation
+        activity?.requestedOrientation = orientation
+        onDispose {
+            activity?.requestedOrientation = originalOrientation
+                ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
     }
 }
 
