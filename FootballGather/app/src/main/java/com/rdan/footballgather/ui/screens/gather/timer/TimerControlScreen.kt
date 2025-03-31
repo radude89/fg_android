@@ -111,7 +111,7 @@ private fun LaunchedEffects(
     }
 
     LaunchedEffect(viewModel.timerFinished) {
-        Log.d("FG - LaunchedEffect", "timerFininshed: ${viewModel.timerFinished}")
+        Log.d("FG - LaunchedEffect", "timerFinished: ${viewModel.timerFinished}")
         if (viewModel.timerFinished) {
             onTimerFinished()
         }

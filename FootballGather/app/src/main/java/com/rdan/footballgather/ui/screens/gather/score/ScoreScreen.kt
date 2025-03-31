@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,9 +31,10 @@ import com.rdan.footballgather.R
 
 @Composable
 fun ScoreScreen(
+    modifier: Modifier = Modifier,
     viewModel: ScoreViewModel = viewModel(),
     innerPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    onScoreChanged: (String) -> Unit
 ) {
     Card(
         modifier = modifier
@@ -45,17 +47,27 @@ fun ScoreScreen(
             )
             .verticalScroll(rememberScrollState())
     ) {
-        ContentView(viewModel)
+        ContentView(
+            viewModel = viewModel,
+            onScoreChanged = onScoreChanged
+        )
     }
 }
 
 @Composable
 private fun ContentView(
+    modifier: Modifier = Modifier,
     viewModel: ScoreViewModel,
-    modifier: Modifier = Modifier
+    onScoreChanged: (String) -> Unit
 ) {
     val teamAScore by viewModel.teamAScore.collectAsState()
     val teamBScore by viewModel.teamBScore.collectAsState()
+    LaunchedEffect(teamAScore) {
+        onScoreChanged("$teamAScore:$teamBScore")
+    }
+    LaunchedEffect(teamBScore) {
+        onScoreChanged("$teamAScore:$teamBScore")
+    }
     Row(
         modifier = modifier
             .padding(dimensionResource(R.dimen.padding_medium))

@@ -1,5 +1,6 @@
 package com.rdan.footballgather.data
 
+import com.rdan.footballgather.model.Gather
 import com.rdan.footballgather.model.Player
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +21,8 @@ class LocalFootballGatherRepository(
 
     override suspend fun updatePlayer(player: Player) =
         footballGatherDao.update(player)
+
+    override suspend fun insertGather(gather: Gather) {
+        footballGatherDao.insert(gather)
+    }
 }

@@ -3,6 +3,7 @@ package com.rdan.footballgather.ui.screens.gather
 import android.content.Context
 import android.content.pm.ActivityInfo
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ import com.rdan.footballgather.ui.screens.gather.score.ScoreScreen
 import com.rdan.footballgather.ui.screens.gather.teamsplayers.TeamsPlayersScreen
 import com.rdan.footballgather.ui.screens.gather.teamsplayers.TeamsPlayersViewModel
 import com.rdan.footballgather.ui.screens.gather.timer.TimerControlScreen
+import kotlinx.coroutines.launch
 
 object GatherDestination : NavigationDestination {
     override val route = "gather"
@@ -53,12 +56,15 @@ object GatherDestination : NavigationDestination {
 @Composable
 fun GatherScreen(
     modifier: Modifier = Modifier,
+    navigateBack: () -> Unit,
     viewModel: GatherViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val uiState by viewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    var score by remember { mutableStateOf("0:0") }
 
     DisposableEffects()
     Scaffold(
@@ -73,8 +79,11 @@ fun GatherScreen(
         },
         floatingActionButton = {
             StopGatherFloatingButton(
-                onClick = {
-
+                onEndGather = {
+                    coroutineScope.launch {
+                        viewModel.endGather(score)
+                        navigateBack()
+                    }
                 }
             )
         }
@@ -83,7 +92,8 @@ fun GatherScreen(
             teamAPlayers = uiState.teamAPlayers,
             teamBPlayers = uiState.teamBPlayers,
             contentPadding = contentPadding,
-            modifier = modifier
+            modifier = modifier,
+            onScoreChanged = { score = it }
         )
     }
 }
@@ -118,7 +128,7 @@ private fun BackButtonEffect() {
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val backCallback = remember {
-        object : androidx.activity.OnBackPressedCallback(true) {
+        object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 // Do nothing, preventing back navigation
             }
@@ -135,7 +145,7 @@ private fun BackButtonEffect() {
 
 @Composable
 private fun StopGatherFloatingButton(
-    onClick: () -> Unit,
+    onEndGather: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var confirmationRequired by rememberSaveable { mutableStateOf(false) }
@@ -157,7 +167,7 @@ private fun StopGatherFloatingButton(
             modifier = modifier,
             onConfirm = {
                 confirmationRequired = false
-                onClick()
+                onEndGather()
             },
             onDismiss = { confirmationRequired = false }
         )
@@ -184,6 +194,7 @@ private fun EndGatherConfirmationAlert(
 private fun ContentView(
     teamAPlayers: List<Player>,
     teamBPlayers: List<Player>,
+    onScoreChanged: (String) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -195,6 +206,7 @@ private fun ContentView(
         )
     ) {
         ScoreScreen(
+            onScoreChanged = onScoreChanged,
             innerPadding = contentPadding,
             modifier = modifier
         )

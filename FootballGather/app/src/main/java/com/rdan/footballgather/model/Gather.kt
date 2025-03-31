@@ -3,7 +3,6 @@ package com.rdan.footballgather.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
 
 @Entity(tableName = "gathers")
 data class Gather (
@@ -11,7 +10,7 @@ data class Gather (
     val id: Long,
 
     @ColumnInfo(name = "completed_at")
-    val completedAt: Date,
+    val completedAt: Long,
 
     @ColumnInfo(name = "score")
     val score: String,

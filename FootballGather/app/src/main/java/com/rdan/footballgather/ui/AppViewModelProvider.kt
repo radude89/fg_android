@@ -46,7 +46,7 @@ object AppViewModelProvider {
         initializer {
             GatherViewModel(
                 savedStateHandle = this.createSavedStateHandle(),
-                playerRepository = footballGatherApplication().container.appRepository
+                repository = footballGatherApplication().container.appRepository
             )
         }
         initializer {

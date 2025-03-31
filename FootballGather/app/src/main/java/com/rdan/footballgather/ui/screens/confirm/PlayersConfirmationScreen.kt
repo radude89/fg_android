@@ -129,7 +129,8 @@ private fun ConfirmFloatingButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val isLandscape =
+        LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     FloatingActionButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
