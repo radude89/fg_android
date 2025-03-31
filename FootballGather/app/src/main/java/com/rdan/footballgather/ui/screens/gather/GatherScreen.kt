@@ -8,14 +8,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +35,7 @@ import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
+import com.rdan.footballgather.ui.components.alertdialogs.DefaultAlertDialog
 import com.rdan.footballgather.ui.navigation.NavigationDestination
 import com.rdan.footballgather.ui.screens.gather.score.ScoreScreen
 import com.rdan.footballgather.ui.screens.gather.teamsplayers.TeamsPlayersScreen
@@ -60,6 +69,13 @@ fun GatherScreen(
                 title = stringResource(R.string.gather),
                 scrollBehavior = scrollBehavior,
                 canNavigateBack = false
+            )
+        },
+        floatingActionButton = {
+            StopGatherFloatingButton(
+                onClick = {
+
+                }
             )
         }
     ) { contentPadding ->
@@ -115,6 +131,53 @@ private fun BackButtonEffect() {
             backCallback.remove()
         }
     }
+}
+
+@Composable
+private fun StopGatherFloatingButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var confirmationRequired by rememberSaveable { mutableStateOf(false) }
+    FloatingActionButton(
+        onClick = { confirmationRequired = true },
+        shape = MaterialTheme.shapes.large,
+        modifier = modifier
+            .padding(
+                dimensionResource(R.dimen.padding_small)
+            )
+    ) {
+        Icon(
+            imageVector = Icons.Default.Done,
+            contentDescription = stringResource(R.string.end_gather),
+        )
+    }
+    if (confirmationRequired) {
+        EndGatherConfirmationAlert(
+            modifier = modifier,
+            onConfirm = {
+                confirmationRequired = false
+                onClick()
+            },
+            onDismiss = { confirmationRequired = false }
+        )
+    }
+}
+
+@Composable
+private fun EndGatherConfirmationAlert(
+    modifier: Modifier = Modifier,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    DefaultAlertDialog(
+        contentMessageID = R.string.end_gather_questio,
+        dismissButtonTitleID = R.string.no,
+        confirmButtonTitleID = R.string.yes,
+        onDismissRequest = onDismiss,
+        onConfirmRequest = onConfirm,
+        modifier = modifier
+    )
 }
 
 @Composable

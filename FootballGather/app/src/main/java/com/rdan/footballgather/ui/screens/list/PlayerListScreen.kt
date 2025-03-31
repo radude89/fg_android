@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -185,7 +185,7 @@ private fun ConfirmPlayersButton(
         modifier = buttonModifier
     ) {
         Icon(
-            imageVector = Icons.Default.Check,
+            imageVector = Icons.Default.Done,
             contentDescription = stringResource(R.string.confirm_players_title)
         )
     }

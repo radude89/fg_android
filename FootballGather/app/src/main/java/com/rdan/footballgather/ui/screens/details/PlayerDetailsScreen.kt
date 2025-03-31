@@ -131,6 +131,7 @@ private fun FloatingActionButtonsView(
         DeleteConfirmationAlert(
             modifier = modifier,
             onConfirm = {
+                deleteConfirmationRequired = false
                 coroutineScope.launch {
                     viewModel.deletePlayer()
                     navigateBack()
@@ -207,7 +208,6 @@ private fun EditFloatingButton(
                     else R.dimen.padding_small
                 )
             )
-
     ) {
         Icon(
             imageVector = Icons.Default.Edit,
