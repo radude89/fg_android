@@ -63,6 +63,7 @@ fun PlayersConfirmationScreen(
     viewModel: PlayersConfirmationViewModel = viewModel(
         factory = AppViewModelProvider.Factory
     ),
+    hasCompletedGather: Boolean = false
 ) {
     val openDialog = remember { mutableStateOf(false) }
     MainContent(
@@ -76,6 +77,15 @@ fun PlayersConfirmationScreen(
         DefaultAlertDialog(
             contentMessageID = R.string.players_both_teams_alert,
             onDismissRequest = { openDialog.value = false },
+            modifier = modifier
+        )
+    }
+    if (hasCompletedGather) {
+        DefaultAlertDialog(
+            titleTextID = R.string.gather_completed_alert_title,
+            contentMessageID = R.string.gather_completed_alert_content,
+            dismissButtonTitleID = R.string.ok,
+            onDismissRequest = { navigateBack() },
             modifier = modifier
         )
     }

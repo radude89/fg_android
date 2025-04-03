@@ -181,7 +181,7 @@ private fun EndGatherConfirmationAlert(
     onDismiss: () -> Unit
 ) {
     DefaultAlertDialog(
-        contentMessageID = R.string.end_gather_questio,
+        contentMessageID = R.string.end_gather_question,
         dismissButtonTitleID = R.string.no,
         confirmButtonTitleID = R.string.yes,
         onDismissRequest = onDismiss,

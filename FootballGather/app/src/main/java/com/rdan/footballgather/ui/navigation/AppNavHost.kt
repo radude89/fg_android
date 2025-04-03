@@ -79,11 +79,17 @@ fun AppNavHost(
                 navigateBack = { navController.popBackStack() }
             )
         }
-        composable(route = PlayersConfirmationDestination.route) {
+        composable(
+            route = PlayersConfirmationDestination.route
+        ) {backStackEntry ->
+            val hasCompletedGather = backStackEntry
+                .savedStateHandle
+                .get<Boolean>("gather_completed")
             PlayersConfirmationScreen(
                 navigateToGatherScreen = { playerTeams ->
                     navController.navigate("${GatherDestination.route}/$playerTeams")
                 },
+                hasCompletedGather = hasCompletedGather ?: false,
                 navigateBack = { navController.popBackStack() }
             )
         }
@@ -96,7 +102,12 @@ fun AppNavHost(
             )
         ) {
             GatherScreen(
-                navigateBack = { navController.popBackStack() }
+                navigateBack = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("gather_completed", true)
+                    navController.popBackStack()
+                }
             )
         }
     }

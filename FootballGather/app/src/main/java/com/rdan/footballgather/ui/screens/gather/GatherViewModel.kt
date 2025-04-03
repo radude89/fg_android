@@ -59,5 +59,7 @@ class GatherViewModel(
             score = score
         )
         repository.insertGather(gather)
+
+        // TODO: Radu - Add logic to insert to the pivot table
     }
 }
