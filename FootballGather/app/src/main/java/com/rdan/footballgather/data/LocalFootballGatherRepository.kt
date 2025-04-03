@@ -22,7 +22,7 @@ class LocalFootballGatherRepository(
     override suspend fun updatePlayer(player: Player) =
         footballGatherDao.update(player)
 
-    override suspend fun insertGather(gather: Gather) {
-        footballGatherDao.insert(gather)
+    override suspend fun insertGather(gather: Gather): Long {
+        return footballGatherDao.insert(gather)
     }
 }

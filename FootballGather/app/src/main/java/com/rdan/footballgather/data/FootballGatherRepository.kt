@@ -10,5 +10,5 @@ interface FootballGatherRepository {
     suspend fun deletePlayer(player: Player)
     suspend fun insertPlayer(player: Player)
     suspend fun updatePlayer(player: Player)
-    suspend fun insertGather(gather: Gather)
+    suspend fun insertGather(gather: Gather): Long
 }

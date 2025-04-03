@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rdan.footballgather.data.FootballGatherRepository
 import com.rdan.footballgather.model.Gather
+import com.rdan.footballgather.model.GatherPlayerCrossRef
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.model.Team
 import com.rdan.footballgather.ui.screens.gather.helpers.PlayerTeamsJsonMapper
@@ -53,13 +54,43 @@ class GatherViewModel(
     }
 
     suspend fun endGather(score: String) {
+        val gatherId = saveGather(score)
+        val uiStateValue = _uiState.value
+        savePlayersToGather(
+            gatherId = gatherId,
+            players = uiStateValue.teamAPlayers,
+            team = Team.TeamA
+        )
+        savePlayersToGather(
+            gatherId = gatherId,
+            players = uiStateValue.teamBPlayers,
+            team = Team.TeamB
+        )
+    }
+
+    private suspend fun saveGather(score: String): Long {
         val gather = Gather(
             id = 0L,
             completedAt = Instant.now().toEpochMilli(),
             score = score
         )
-        repository.insertGather(gather)
+        return repository.insertGather(gather)
+    }
 
-        // TODO: Radu - Add logic to insert to the pivot table
+    // TODO: Radu - insert data into player gather cross pivot table
+
+    private suspend fun savePlayersToGather(
+        gatherId: Long,
+        players: List<Player>,
+        team: Team
+    ) {
+        players.forEach { player ->
+            val pivot = GatherPlayerCrossRef(
+                playerId = player.id,
+                gatherId = gatherId,
+                team = Team.TeamA
+            )
+//            repository.insertGatherPlayerCrossRef(pivot)
+        }
     }
 }

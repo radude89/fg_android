@@ -41,5 +41,5 @@ interface FootballGatherDao {
     suspend fun update(player: Player)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(gather: Gather)
+    suspend fun insert(gather: Gather): Long
 }
