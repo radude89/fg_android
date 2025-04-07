@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
@@ -55,6 +57,7 @@ fun PlayerListScreen(
     navigateToPlayerUpdate: (Long) -> Unit,
     navigateToAddPlayer: () -> Unit,
     navigateToConfirmPlayers: ()-> Unit,
+    navigateToHistory: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PlayerListViewModel = viewModel(
         factory = AppViewModelProvider.Factory
@@ -78,13 +81,15 @@ fun PlayerListScreen(
                 FloatingActionButtonsInLandscape(
                     playerListUiState = playerListUiState,
                     onConfirm = navigateToConfirmPlayers,
-                    onAdd = navigateToAddPlayer
+                    onAdd = navigateToAddPlayer,
+                    onHistory = navigateToHistory
                 )
             } else {
                 FloatingActionButtonsInPortrait(
                     playerListUiState = playerListUiState,
                     onConfirm = navigateToConfirmPlayers,
-                    onAdd = navigateToAddPlayer
+                    onAdd = navigateToAddPlayer,
+                    onHistory = navigateToHistory
                 )
             }
         }
@@ -106,7 +111,8 @@ fun PlayerListScreen(
 private fun FloatingActionButtonsInLandscape(
     playerListUiState: PlayerUiState,
     onConfirm: () -> Unit,
-    onAdd: () -> Unit
+    onAdd: () -> Unit,
+    onHistory: () -> Unit,
 ) {
     Row {
         if (playerListUiState.playerList.size > 1) {
@@ -115,9 +121,17 @@ private fun FloatingActionButtonsInLandscape(
                 onClick = onConfirm
             )
         }
-        AddButton(
+        PlayerListFloatingButton(
+            icon = Icons.Default.Add,
+            contentDescription = R.string.add_player_title,
             isLandscape = true,
             onClick = onAdd
+        )
+        PlayerListFloatingButton(
+            icon = Icons.Default.DateRange,
+            contentDescription = R.string.history,
+            isLandscape = true,
+            onClick = onHistory
         )
     }
 }
@@ -126,7 +140,8 @@ private fun FloatingActionButtonsInLandscape(
 private fun FloatingActionButtonsInPortrait(
     playerListUiState: PlayerUiState,
     onConfirm: () -> Unit,
-    onAdd: () -> Unit
+    onAdd: () -> Unit,
+    onHistory: () -> Unit,
 ) {
     Column {
         if (playerListUiState.playerList.size > 1) {
@@ -135,33 +150,47 @@ private fun FloatingActionButtonsInPortrait(
                 onClick = onConfirm
             )
         }
-        AddButton(
+        PlayerListFloatingButton(
+            icon = Icons.Default.Add,
+            contentDescription = R.string.add_player_title,
             isLandscape = false,
             onClick = onAdd
+        )
+        PlayerListFloatingButton(
+            icon = Icons.Default.DateRange,
+            contentDescription = R.string.history,
+            isLandscape = false,
+            onClick = onHistory
         )
     }
 }
 
 @Composable
-private fun AddButton(
+private fun PlayerListFloatingButton(
+    icon: ImageVector,
+    @StringRes contentDescription: Int,
     isLandscape: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val buttonModifier = if (isLandscape)
+        modifier.padding(
+            vertical = dimensionResource(R.dimen.padding_medium),
+            horizontal = dimensionResource(R.dimen.padding_small)
+        )
+    else
+        modifier.padding(
+            horizontal = dimensionResource(R.dimen.padding_small),
+            vertical = dimensionResource(R.dimen.padding_medium)
+        )
     FloatingActionButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        modifier = modifier
-            .padding(
-                dimensionResource(
-                    if (isLandscape) R.dimen.padding_medium
-                    else R.dimen.padding_small
-                )
-            )
+        modifier = buttonModifier
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = stringResource(R.string.add_player_title)
+            imageVector = icon,
+            contentDescription = stringResource(contentDescription)
         )
     }
 }
@@ -177,7 +206,7 @@ private fun ConfirmPlayersButton(
     else
         modifier.padding(
             horizontal = dimensionResource(R.dimen.padding_small),
-            vertical = dimensionResource(R.dimen.padding_mediumLarge),
+            vertical = dimensionResource(R.dimen.padding_medium)
         )
     FloatingActionButton(
         onClick = onClick,

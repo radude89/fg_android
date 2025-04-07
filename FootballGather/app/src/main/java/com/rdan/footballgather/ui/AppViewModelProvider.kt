@@ -12,6 +12,7 @@ import com.rdan.footballgather.ui.screens.details.PlayerDetailsViewModel
 import com.rdan.footballgather.ui.screens.edit.PlayerEditViewModel
 import com.rdan.footballgather.ui.screens.gather.GatherViewModel
 import com.rdan.footballgather.ui.screens.gather.timer.TimerControlViewModel
+import com.rdan.footballgather.ui.screens.history.HistoryViewModel
 import com.rdan.footballgather.ui.screens.list.PlayerListViewModel
 
 object AppViewModelProvider {
@@ -51,6 +52,11 @@ object AppViewModelProvider {
         }
         initializer {
             TimerControlViewModel()
+        }
+        initializer {
+            HistoryViewModel(
+                repository = footballGatherApplication().container.appRepository
+            )
         }
     }
 }

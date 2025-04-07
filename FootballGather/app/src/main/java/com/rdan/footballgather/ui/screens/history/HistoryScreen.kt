@@ -36,6 +36,8 @@ object HistoryDestination : NavigationDestination {
     override val titleRes = R.string.history
 }
 
+// TODO: Radu - Create this screen
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
