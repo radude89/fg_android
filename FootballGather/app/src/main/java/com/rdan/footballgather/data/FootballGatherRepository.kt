@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FootballGatherRepository {
     fun getAllPlayers(): Flow<List<Player>>
+    fun getAllGathers(): Flow<List<Gather>>
     fun getPlayer(id: Long): Flow<Player?>
     suspend fun deletePlayer(player: Player)
     suspend fun insertPlayer(player: Player)

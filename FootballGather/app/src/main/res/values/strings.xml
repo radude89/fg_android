@@ -52,4 +52,7 @@
     <string name="end_gather_question">Are you sure you want to end this gather?</string>
     <string name="gather_completed_alert_content">You can visit your results in the history tab</string>
     <string name="gather_completed_alert_title">Gather finished</string>
+    <string name="past_gathers">Past Gathers</string>
+    <string name="history">Past Gathers</string>
+    <string name="no_gathers_available">You haven\'t played any gathers yet.</string>
 </resources>

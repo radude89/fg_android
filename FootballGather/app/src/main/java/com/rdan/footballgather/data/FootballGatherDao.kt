@@ -18,6 +18,9 @@ interface FootballGatherDao {
     @Query("SELECT * FROM players ORDER BY created_at DESC")
     fun getAllPlayers(): Flow<List<Player>>
 
+    @Query("SELECT * FROM gathers ORDER BY completed_at DESC")
+    fun getAllGathers(): Flow<List<Gather>>
+
     @Query("SELECT * FROM players WHERE id = :id")
     fun getPlayer(id: Long): Flow<Player>
 
