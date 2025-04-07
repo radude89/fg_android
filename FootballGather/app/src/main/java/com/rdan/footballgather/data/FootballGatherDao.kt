@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.rdan.footballgather.model.Gather
+import com.rdan.footballgather.model.GatherPlayerCrossRef
 import com.rdan.footballgather.model.Player
 import com.rdan.footballgather.model.Team
 import kotlinx.coroutines.flow.Flow
@@ -42,4 +43,7 @@ interface FootballGatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(gather: Gather): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGatherPlayerCrossRef(pivot: GatherPlayerCrossRef)
 }

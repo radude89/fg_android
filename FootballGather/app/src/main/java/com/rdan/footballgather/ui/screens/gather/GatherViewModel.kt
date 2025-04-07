@@ -77,8 +77,6 @@ class GatherViewModel(
         return repository.insertGather(gather)
     }
 
-    // TODO: Radu - insert data into player gather cross pivot table
-
     private suspend fun savePlayersToGather(
         gatherId: Long,
         players: List<Player>,
@@ -88,9 +86,9 @@ class GatherViewModel(
             val pivot = GatherPlayerCrossRef(
                 playerId = player.id,
                 gatherId = gatherId,
-                team = Team.TeamA
+                team = team
             )
-//            repository.insertGatherPlayerCrossRef(pivot)
+            repository.insertGatherPlayerCrossRef(pivot)
         }
     }
 }
