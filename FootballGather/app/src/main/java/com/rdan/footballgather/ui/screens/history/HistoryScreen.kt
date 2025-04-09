@@ -1,8 +1,11 @@
 package com.rdan.footballgather.ui.screens.history
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
@@ -120,27 +124,91 @@ private fun GatherItem(
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(R.dimen.padding_medium))
     ) {
-        Column(
-            Modifier
-                .padding(dimensionResource(R.dimen.padding_medium))
-        ) {
-            CardTitle(gather)
-        }
+        MainItemContentView(gather, modifier)
     }
 }
 
 @Composable
-private fun CardTitle(
+private fun MainItemContentView(
+    gather: Gather,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(R.dimen.padding_mediumLarge),
+                vertical = dimensionResource(R.dimen.padding_large)
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        MainItemLeadingView(modifier = Modifier.weight(1f))
+        HorizontalSpacer()
+        ScoreView(
+            gather = gather,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(start = dimensionResource(R.dimen.padding_medium))
+        )
+    }
+}
+
+@Composable
+private fun MainItemLeadingView(modifier: Modifier) {
+    Column(modifier) {
+        TeamPlayersView()
+        StaticTextView(R.string.vs)
+        TeamPlayersView()
+    }
+}
+
+@Composable
+private fun TeamPlayersView(
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = "John, Jane, Player 3",
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = modifier.padding(
+            bottom = dimensionResource(R.dimen.padding_small)
+        )
+    )
+}
+
+@Composable
+private fun StaticTextView(
+    @StringRes textRes: Int,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = stringResource(textRes),
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = modifier.padding(
+            bottom = dimensionResource(R.dimen.padding_small)
+        )
+    )
+}
+
+@Composable
+private fun HorizontalSpacer() {
+    Spacer(
+        modifier = Modifier.padding(
+            horizontal = dimensionResource(R.dimen.padding_small)
+        )
+    )
+}
+
+@Composable
+private fun ScoreView(
     gather: Gather,
     modifier: Modifier = Modifier
 ) {
     Text(
-        gather.score,
+        text = gather.score,
         style = MaterialTheme.typography.headlineMedium,
         modifier = modifier
-            .padding(
-                horizontal = dimensionResource(R.dimen.padding_small),
-            )
     )
 }
 
