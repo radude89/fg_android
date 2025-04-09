@@ -3,6 +3,7 @@ package com.rdan.footballgather.data
 import com.rdan.footballgather.model.Gather
 import com.rdan.footballgather.model.GatherPlayerCrossRef
 import com.rdan.footballgather.model.Player
+import com.rdan.footballgather.model.Team
 import kotlinx.coroutines.flow.Flow
 
 class LocalFootballGatherRepository(
@@ -32,5 +33,15 @@ class LocalFootballGatherRepository(
 
     override suspend fun insertGatherPlayerCrossRef(pivot: GatherPlayerCrossRef) {
         footballGatherDao.insertGatherPlayerCrossRef(pivot)
+    }
+
+    override suspend fun getPlayersForTeamInGather(
+        team: Team,
+        gather: Gather
+    ): Flow<List<Player>> {
+        return footballGatherDao.getPlayersForTeamInGather(
+            gatherId = gather.id,
+            team = team
+        )
     }
 }

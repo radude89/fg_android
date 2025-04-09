@@ -3,6 +3,7 @@ package com.rdan.footballgather.data
 import com.rdan.footballgather.model.Gather
 import com.rdan.footballgather.model.GatherPlayerCrossRef
 import com.rdan.footballgather.model.Player
+import com.rdan.footballgather.model.Team
 import kotlinx.coroutines.flow.Flow
 
 interface FootballGatherRepository {
@@ -14,4 +15,8 @@ interface FootballGatherRepository {
     suspend fun updatePlayer(player: Player)
     suspend fun insertGather(gather: Gather): Long
     suspend fun insertGatherPlayerCrossRef(pivot: GatherPlayerCrossRef)
+    suspend fun getPlayersForTeamInGather(
+        team: Team,
+        gather: Gather
+    ): Flow<List<Player>>
 }
