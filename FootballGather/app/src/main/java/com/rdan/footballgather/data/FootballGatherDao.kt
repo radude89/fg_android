@@ -33,7 +33,7 @@ interface FootballGatherDao {
         INNER JOIN gather_players gpc ON p.id = gpc.player_id
         WHERE gpc.gather_id = :gatherId AND gpc.team = :team
     """)
-    suspend fun getPlayersForTeamInGather(
+    fun getPlayersForTeamInGather(
         gatherId: Long,
         team: Team
     ): Flow<List<Player>>

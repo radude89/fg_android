@@ -35,13 +35,12 @@ class LocalFootballGatherRepository(
         footballGatherDao.insertGatherPlayerCrossRef(pivot)
     }
 
-    override suspend fun getPlayersForTeamInGather(
+    override fun getPlayersForTeamInGather(
         team: Team,
         gather: Gather
-    ): Flow<List<Player>> {
-        return footballGatherDao.getPlayersForTeamInGather(
+    ): Flow<List<Player>> =
+        footballGatherDao.getPlayersForTeamInGather(
             gatherId = gather.id,
             team = team
         )
-    }
 }

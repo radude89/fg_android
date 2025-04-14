@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.rdan.footballgather.R
 import com.rdan.footballgather.model.Gather
+import com.rdan.footballgather.model.Team
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
 import com.rdan.footballgather.ui.navigation.NavigationDestination
@@ -39,8 +40,6 @@ object HistoryDestination : NavigationDestination {
     override val route = "history"
     override val titleRes = R.string.history
 }
-
-// TODO: Radu - Create this screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +58,7 @@ fun HistoryScreen(
         topBar = { TopBar(scrollBehavior, navigateBack) }
     ) { contentPadding ->
         ContentView(
+            viewModel,
             uiState,
             modifier,
             contentPadding
@@ -81,6 +81,7 @@ private fun TopBar(
 
 @Composable
 private fun ContentView(
+    viewModel: HistoryViewModel,
     uiState: HistoryUiState,
     modifier: Modifier,
     contentPadding: PaddingValues
@@ -89,6 +90,7 @@ private fun ContentView(
         EmptyView(modifier)
     } else {
         ColumnView(
+            viewModel = viewModel,
             gathers = uiState.gathers,
             contentPadding = contentPadding,
             modifier = modifier
@@ -98,6 +100,7 @@ private fun ContentView(
 
 @Composable
 private fun ColumnView(
+    viewModel: HistoryViewModel,
     gathers: List<Gather>,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
@@ -109,13 +112,14 @@ private fun ColumnView(
         )
     ) {
         items(gathers) { gather ->
-            GatherItem(gather, modifier)
+            GatherItem(viewModel, gather, modifier)
         }
     }
 }
 
 @Composable
 private fun GatherItem(
+    viewModel: HistoryViewModel,
     gather: Gather,
     modifier: Modifier = Modifier
 ) {
@@ -124,12 +128,13 @@ private fun GatherItem(
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(R.dimen.padding_medium))
     ) {
-        MainItemContentView(gather, modifier)
+        MainItemContentView(viewModel, gather, modifier)
     }
 }
 
 @Composable
 private fun MainItemContentView(
+    viewModel: HistoryViewModel,
     gather: Gather,
     modifier: Modifier = Modifier
 ) {
@@ -143,7 +148,11 @@ private fun MainItemContentView(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        MainItemLeadingView(modifier = Modifier.weight(1f))
+        MainItemLeadingView(
+            viewModel = viewModel,
+            gather = gather,
+            modifier = Modifier.weight(1f)
+        )
         HorizontalSpacer()
         ScoreView(
             gather = gather,
@@ -155,20 +164,27 @@ private fun MainItemContentView(
 }
 
 @Composable
-private fun MainItemLeadingView(modifier: Modifier) {
+private fun MainItemLeadingView(
+    viewModel: HistoryViewModel,
+    gather: Gather,
+    modifier: Modifier
+) {
     Column(modifier) {
-        TeamPlayersView()
+        TeamPlayersView(viewModel, Team.TeamA, gather)
         StaticTextView(R.string.vs)
-        TeamPlayersView()
+        TeamPlayersView(viewModel, Team.TeamB, gather)
     }
 }
 
 @Composable
 private fun TeamPlayersView(
+    viewModel: HistoryViewModel,
+    team: Team,
+    gather: Gather,
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = "John, Jane, Player 3",
+        text = viewModel.getPlayerLine(team, gather),
         style = MaterialTheme.typography.bodyMedium,
         modifier = modifier.padding(
             bottom = dimensionResource(R.dimen.padding_small)
