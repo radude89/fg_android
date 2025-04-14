@@ -43,4 +43,10 @@ class LocalFootballGatherRepository(
             gatherId = gather.id,
             team = team
         )
+
+    override suspend fun deleteGather(gather: Gather) =
+        footballGatherDao.delete(gather)
+
+    override suspend fun deleteGatherPlayers(gatherId: Long) =
+        footballGatherDao.deleteGatherPlayers(gatherId)
 }

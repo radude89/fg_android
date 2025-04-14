@@ -28,29 +28,34 @@ class HistoryViewModel(
 
     init {
         viewModelScope.launch {
-            val gathers = repository.getAllGathers().first()
-            val gatherPlayersMap: Map<Gather, Map<Team, List<Player>>> =
-                gathers.associateWith { gather ->
-                    mapOf(
-                        Team.TeamA to repository.getPlayersForTeamInGather(
-                            Team.TeamA, gather
-                        ).first(),
-
-                        Team.TeamB to repository.getPlayersForTeamInGather(
-                            Team.TeamB, gather
-                        ).first()
-                    )
-            }
-
-            _uiState.value = HistoryUiState(
-                gathers = gathers,
-                gatherPlayersMap = gatherPlayersMap
-            )
+            updateUiState()
         }
     }
 
     fun getPlayerLine(team: Team, gather: Gather): String {
         val players = _uiState.value.gatherPlayersMap[gather]?.get(team)
         return players?.joinToString(", ") { it.name } ?: ""
+    }
+
+    fun deleteGather(gather: Gather) {
+        viewModelScope.launch {
+            repository.deleteGatherPlayers(gatherId = gather.id)
+            repository.deleteGather(gather)
+            updateUiState()
+        }
+    }
+
+    private suspend fun updateUiState() {
+        val updatedGathers = repository.getAllGathers().first()
+        val updatedGatherPlayersMap = updatedGathers.associateWith { g ->
+            mapOf(
+                Team.TeamA to repository.getPlayersForTeamInGather(Team.TeamA, g).first(),
+                Team.TeamB to repository.getPlayersForTeamInGather(Team.TeamB, g).first()
+            )
+        }
+        _uiState.value = HistoryUiState(
+            gathers = updatedGathers,
+            gatherPlayersMap = updatedGatherPlayersMap
+        )
     }
 }

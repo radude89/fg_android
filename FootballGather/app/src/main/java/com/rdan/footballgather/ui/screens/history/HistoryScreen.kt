@@ -11,8 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -141,10 +145,8 @@ private fun MainItemContentView(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = dimensionResource(R.dimen.padding_mediumLarge),
-                vertical = dimensionResource(R.dimen.padding_large)
-            ),
+            .padding(start = dimensionResource(R.dimen.padding_mediumLarge))
+            .padding(vertical = dimensionResource(R.dimen.padding_large)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -160,6 +162,12 @@ private fun MainItemContentView(
                 .align(Alignment.CenterVertically)
                 .padding(start = dimensionResource(R.dimen.padding_medium))
         )
+        IconButton(onClick = { viewModel.deleteGather(gather) }) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = stringResource(R.string.delete_gather_title),
+            )
+        }
     }
 }
 

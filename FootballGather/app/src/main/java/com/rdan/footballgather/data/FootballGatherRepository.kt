@@ -16,4 +16,6 @@ interface FootballGatherRepository {
     suspend fun insertGather(gather: Gather): Long
     suspend fun insertGatherPlayerCrossRef(pivot: GatherPlayerCrossRef)
     fun getPlayersForTeamInGather(team: Team, gather: Gather): Flow<List<Player>>
+    suspend fun deleteGather(gather: Gather)
+    suspend fun deleteGatherPlayers(gatherId: Long)
 }

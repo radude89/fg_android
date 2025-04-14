@@ -49,4 +49,10 @@ interface FootballGatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGatherPlayerCrossRef(pivot: GatherPlayerCrossRef)
+
+    @Delete
+    suspend fun delete(gather: Gather)
+
+    @Query("DELETE FROM gather_players WHERE gather_id = :gatherId")
+    suspend fun deleteGatherPlayers(gatherId: Long)
 }

@@ -56,4 +56,5 @@
     <string name="history">Past Gathers</string>
     <string name="no_gathers_available">You haven\'t played any gathers yet.</string>
     <string name="vs">vs</string>
+    <string name="delete_gather_title">Delete gather</string>
 </resources>
