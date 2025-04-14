@@ -57,4 +57,5 @@
     <string name="no_gathers_available">You haven\'t played any gathers yet.</string>
     <string name="vs">vs</string>
     <string name="delete_gather_title">Delete gather</string>
+    <string name="delete_gather_question">Are you sure you want to delete this gather?</string>
 </resources>

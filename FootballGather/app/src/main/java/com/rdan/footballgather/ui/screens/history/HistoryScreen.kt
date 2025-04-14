@@ -25,6 +25,9 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -38,6 +41,7 @@ import com.rdan.footballgather.model.Gather
 import com.rdan.footballgather.model.Team
 import com.rdan.footballgather.ui.AppViewModelProvider
 import com.rdan.footballgather.ui.FootballGatherTopBar
+import com.rdan.footballgather.ui.components.alertdialogs.DefaultAlertDialog
 import com.rdan.footballgather.ui.navigation.NavigationDestination
 
 object HistoryDestination : NavigationDestination {
@@ -142,6 +146,7 @@ private fun MainItemContentView(
     gather: Gather,
     modifier: Modifier = Modifier
 ) {
+    var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -162,13 +167,39 @@ private fun MainItemContentView(
                 .align(Alignment.CenterVertically)
                 .padding(start = dimensionResource(R.dimen.padding_medium))
         )
-        IconButton(onClick = { viewModel.deleteGather(gather) }) {
+        IconButton(onClick = { deleteConfirmationRequired = true }) {
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = stringResource(R.string.delete_gather_title),
             )
         }
     }
+    if (deleteConfirmationRequired) {
+        DeleteConfirmationAlert(
+            modifier = modifier,
+            onConfirm = {
+                deleteConfirmationRequired = false
+                viewModel.deleteGather(gather)
+            },
+            onDismiss = { deleteConfirmationRequired = false }
+        )
+    }
+}
+
+@Composable
+private fun DeleteConfirmationAlert(
+    modifier: Modifier = Modifier,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    DefaultAlertDialog(
+        contentMessageID = R.string.delete_gather_question,
+        dismissButtonTitleID = R.string.no,
+        confirmButtonTitleID = R.string.yes,
+        onDismissRequest = onDismiss,
+        onConfirmRequest = onConfirm,
+        modifier = modifier
+    )
 }
 
 @Composable
