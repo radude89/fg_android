@@ -86,7 +86,7 @@ fun AppNavHost(
         }
         composable(
             route = PlayersConfirmationDestination.route
-        ) {backStackEntry ->
+        ) { backStackEntry ->
             val hasCompletedGather = backStackEntry
                 .savedStateHandle
                 .get<Boolean>("gather_completed")
